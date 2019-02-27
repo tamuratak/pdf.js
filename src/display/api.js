@@ -15,6 +15,10 @@
 /* globals requirejs, __non_webpack_require__ */
 /* eslint no-var: error */
 
+/**
+ * @module pdfjs-dist
+ */
+
 import {
   AbortException, assert, createPromiseCapability, getVerbosityLevel, info,
   InvalidPDFException, isArrayBuffer, isSameOrigin, MissingPDFException,
@@ -103,6 +107,11 @@ if (typeof PDFJSDev !== 'undefined' && PDFJSDev.test('GENERIC')) {
 }
 
 /**
+ * TODO https://github.com/mozilla/pdf.js/pull/10575
+ * @typedef {any} IPDFStream
+ */
+
+/**
  * @typedef {function} IPDFStreamFactory
  * @param {DocumentInitParameters} params The document initialization
  * parameters. The "url" key is always present.
@@ -123,12 +132,18 @@ function setPDFNetworkStreamFactory(pdfNetworkStreamFactory) {
   createPDFNetworkStream = pdfNetworkStreamFactory;
 }
 
+/* eslint-disable max-len */
+/**
+ * @typedef {Int8Array | Uint8Array | Int16Array | Uint16Array | Int32Array | Uint32Array | Uint8ClampedArray | Float32Array | Float64Array} TypedArray //
+ */
+/* eslint-enable max-len */
+
 /**
  * Document initialization / loading parameters object.
  *
  * @typedef {Object} DocumentInitParameters
  * @property {string}     [url] - The URL of the PDF.
- * @property {TypedArray|Array|string} [data] - Binary PDF data. Use typed
+ * @property {TypedArray|Array<number>|string} [data] - Binary PDF data. Use typed
  *    arrays (Uint8Array) to improve the memory usage. If PDF data is
  *    BASE64-encoded, use atob() to convert it to a binary string first.
  * @property {Object}     [httpHeaders] - Basic authentication headers.
@@ -421,12 +436,10 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
 /**
  * PDF document loading operation.
  * @class
- * @alias PDFDocumentLoadingTask
  */
 const PDFDocumentLoadingTask = (function PDFDocumentLoadingTaskClosure() {
   let nextDocumentId = 0;
 
-  /** @constructs PDFDocumentLoadingTask */
   class PDFDocumentLoadingTask {
     constructor() {
       this._capability = createPromiseCapability();
@@ -467,7 +480,7 @@ const PDFDocumentLoadingTask = (function PDFDocumentLoadingTaskClosure() {
     }
 
     /**
-     * @return {Promise}
+     * @type {Promise<PDFDocumentProxy>}
      */
     get promise() {
       return this._capability.promise;
@@ -475,8 +488,8 @@ const PDFDocumentLoadingTask = (function PDFDocumentLoadingTaskClosure() {
 
     /**
      * Aborts all network requests and destroys worker.
-     * @return {Promise} A promise that is resolved after destruction activity
-     *                   is completed.
+     * @return {Promise<void>} A promise that is resolved after destruction
+     *                         activity is completed.
      */
     destroy() {
       this.destroyed = true;
@@ -497,8 +510,8 @@ const PDFDocumentLoadingTask = (function PDFDocumentLoadingTaskClosure() {
      *
      * @param {function} onFulfilled The callback for the loading completion.
      * @param {function} onRejected The callback for the loading failure.
-     * @return {Promise} A promise that is resolved after the onFulfilled or
-     *                   onRejected callback.
+     * @return {Promise<any>} A promise that is resolved after the onFulfilled
+     *                        or onRejected callback.
      */
     then(onFulfilled, onRejected) {
       deprecated('PDFDocumentLoadingTask.then method, ' +
@@ -596,14 +609,14 @@ class PDFDocumentProxy {
   }
 
   /**
-   * @return {number} Total number of pages the PDF contains.
+   * @type {number} Total number of pages the PDF contains.
    */
   get numPages() {
     return this._pdfInfo.numPages;
   }
 
   /**
-   * @return {string} A (not guaranteed to be) unique ID to identify a PDF.
+   * @type {string} A (not guaranteed to be) unique ID to identify a PDF.
    */
   get fingerprint() {
     return this._pdfInfo.fingerprint;
@@ -611,8 +624,8 @@ class PDFDocumentProxy {
 
   /**
    * @param {number} pageNumber - The page number to get. The first page is 1.
-   * @return {Promise} A promise that is resolved with a {@link PDFPageProxy}
-   *   object.
+   * @return {Promise<PDFPageProxy>} A promise that is resolved with
+   *   a {@link PDFPageProxy} object.
    */
   getPage(pageNumber) {
     return this._transport.getPage(pageNumber);
@@ -621,16 +634,16 @@ class PDFDocumentProxy {
   /**
    * @param {{num: number, gen: number}} ref - The page reference. Must have
    *   the `num` and `gen` properties.
-   * @return {Promise} A promise that is resolved with the page index that is
-   *   associated with the reference.
+   * @return {Promise<{num: number, gen: number}>} A promise that is resolved
+   *   with the page index that is associated with the reference.
    */
   getPageIndex(ref) {
     return this._transport.getPageIndex(ref);
   }
 
   /**
-   * @return {Promise} A promise that is resolved with a lookup table for
-   *   mapping named destinations to reference numbers.
+   * @return {Promise< Object<string,any> >} A promise that is resolved with
+   *   a lookup table for mapping named destinations to reference numbers.
    *
    * This can be slow for large documents. Use `getDestination` instead.
    */
@@ -640,24 +653,25 @@ class PDFDocumentProxy {
 
   /**
    * @param {string} id - The named destination to get.
-   * @return {Promise} A promise that is resolved with all information
-   *   of the given named destination.
+   * @return {Promise<Array<any>>} A promise that is resolved with all
+   *   information of the given named destination.
    */
   getDestination(id) {
     return this._transport.getDestination(id);
   }
 
   /**
-   * @return {Promise} A promise that is resolved with an {Array} containing
-   *   the page labels that correspond to the page indexes, or `null` when
-   *   no page labels are present in the PDF file.
+   * @return {Promise< Array<string> > | Promise<null>} A promise that is
+   *   resolved with an {Array} containing the page labels that correspond to
+   *   the page indexes, or `null` when no page labels are present in the PDF
+   *   file.
    */
   getPageLabels() {
     return this._transport.getPageLabels();
   }
 
   /**
-   * @return {Promise} A promise that is resolved with a {string} containing
+   * @return {Promise<string>} A promise that is resolved with a {string} containing
    *   the page layout name.
    */
   getPageLayout() {
@@ -665,7 +679,7 @@ class PDFDocumentProxy {
   }
 
   /**
-   * @return {Promise} A promise that is resolved with a {string} containing
+   * @return {Promise<string>} A promise that is resolved with a {string} containing
    *   the page mode name.
    */
   getPageMode() {
@@ -673,7 +687,7 @@ class PDFDocumentProxy {
   }
 
   /**
-   * @return {Promise} A promise that is resolved with an {Object} containing
+   * @return {Promise<any>} A promise that is resolved with an {Object} containing
    *   the viewer preferences.
    */
   getViewerPreferences() {
@@ -681,7 +695,7 @@ class PDFDocumentProxy {
   }
 
   /**
-   * @return {Promise} A promise that is resolved with an {Array} containing the
+   * @return {Promise<any>} A promise that is resolved with an {Array} containing the
    *   destination, or `null` when no open action is present in the PDF file.
    */
   getOpenActionDestination() {
@@ -689,7 +703,7 @@ class PDFDocumentProxy {
   }
 
   /**
-   * @return {Promise} A promise that is resolved with a lookup table for
+   * @return {Promise<any>} A promise that is resolved with a lookup table for
    *   mapping named attachments to their content.
    */
   getAttachments() {
@@ -697,16 +711,30 @@ class PDFDocumentProxy {
   }
 
   /**
-   * @return {Promise} A promise that is resolved with an {Array} of all the
-   *   JavaScript strings in the name tree, or `null` if no JavaScript exists.
+   * @return {Promise< Array<string> > | Promise<null>} A promise that is
+   *   resolved with an {Array} of all the JavaScript strings in the name tree,
+   *   or `null` if no JavaScript exists.
    */
   getJavaScript() {
     return this._transport.getJavaScript();
   }
 
   /**
-   * @return {Promise} A promise that is resolved with an {Array} that is a
-   * tree outline (if it has one) of the PDF. The tree is in the format of:
+   TODO https://github.com/mozilla/pdf.js/pull/10575
+   * @typedef {Object} OutlineNode
+   * @property {string} title
+   * @property {boolean} bold
+   * @property {boolean} italic
+   * @property {Uint8ClampedArray} color
+   * @property {any} dest
+   * @property {string} url
+   * @property {Array<OutlineNode>} items
+   */
+
+  /**
+   * @return {Promise< Array<OutlineNode> >} A promise that is resolved with
+   * an {Array} that is a tree outline (if it has one) of the PDF. The tree is
+   * in the format of:
    * [
    *   {
    *     title: string,
@@ -726,45 +754,46 @@ class PDFDocumentProxy {
   }
 
   /**
-   * @return {Promise} A promise that is resolved with an {Array} that contains
-   *   the permission flags for the PDF document, or `null` when
-   *   no permissions are present in the PDF file.
+   * @return {Promise< Array<string | null> >} A promise that is resolved with
+   *   an {Array} that contains the permission flags for the PDF document, or
+   *   `null` when no permissions are present in the PDF file.
    */
   getPermissions() {
     return this._transport.getPermissions();
   }
 
   /**
-   * @return {Promise} A promise that is resolved with an {Object} that has
-   *   `info` and `metadata` properties. `info` is an {Object} filled with
-   *   anything available in the information dictionary and similarly
-   *   `metadata` is a {Metadata} object with information from the metadata
-   *   section of the PDF.
+   * @return {Promise<{ info: any, metadata: any }>} A promise that is resolved
+   *   with an {Object} that has `info` and `metadata` properties. `info` is
+   *   an {Object} filled with anything available in the information dictionary
+   *   and similarly `metadata` is a {Metadata} object with information from
+   *   the metadata section of the PDF.
    */
   getMetadata() {
     return this._transport.getMetadata();
   }
 
   /**
-   * @return {Promise} A promise that is resolved with a {TypedArray} that has
-   * the raw data from the PDF.
+   * @return {Promise<TypedArray>} A promise that is resolved with
+   * a {TypedArray} that has the raw data from the PDF.
    */
   getData() {
     return this._transport.getData();
   }
 
   /**
-   * @return {Promise} A promise that is resolved when the document's data
-   *   is loaded. It is resolved with an {Object} that contains the `length`
-   *   property that indicates size of the PDF data in bytes.
+   * @return {Promise<{ length: number }>} A promise that is resolved when the
+   *   document's data is loaded. It is resolved with an {Object} that contains
+   *   the `length` property that indicates size of the PDF data in bytes.
    */
   getDownloadInfo() {
     return this._transport.downloadInfoCapability.promise;
   }
 
   /**
-   * @return {Promise} A promise this is resolved with current statistics about
-   *   document structures (see {@link PDFDocumentStats}).
+   * @return {Promise<PDFDocumentStats>} A promise this is resolved with
+   *   current statistics about document structures
+   *   (see {@link PDFDocumentStats}).
    */
   getStats() {
     return this._transport.getStats();
@@ -785,9 +814,9 @@ class PDFDocumentProxy {
   }
 
   /**
-   * @return {Object} A subset of the current {DocumentInitParameters},
-   *   which are either needed in the viewer and/or whose default values
-   *   may be affected by the `apiCompatibilityParams`.
+   * @type {DocumentInitParameters} A subset of the current
+   *   {DocumentInitParameters}, which are either needed in the viewer and/or
+   *   whose default values may be affected by the `apiCompatibilityParams`.
    */
   get loadingParams() {
     return this._transport.loadingParams;
@@ -823,11 +852,17 @@ class PDFDocumentProxy {
  */
 
 /**
+ * TODO https://github.com/mozilla/pdf.js/pull/10575
+ * @typedef {Object} TextStyles
+ */
+
+/**
  * Page text content.
  *
  * @typedef {Object} TextContent
- * @property {array} items - array of {@link TextItem}
- * @property {Object} styles - {@link TextStyle} objects, indexed by font name.
+ * @property {Array<TextItem>} items - array of {@link TextItem}
+ * @property {Object<string, TextStyles>} styles - {@link TextStyles} objects,
+ *   indexed by font name.
  */
 
 /**
@@ -836,7 +871,7 @@ class PDFDocumentProxy {
  * @typedef {Object} TextItem
  * @property {string} str - text content.
  * @property {string} dir - text direction: 'ttb', 'ltr' or 'rtl'.
- * @property {array} transform - transformation matrix.
+ * @property {Array<any>} transform - transformation matrix.
  * @property {number} width - width in device space.
  * @property {number} height - height in device space.
  * @property {string} fontName - font name used by pdf.js for converted font.
@@ -876,7 +911,7 @@ class PDFDocumentProxy {
  * @property {boolean} [renderInteractiveForms] - Whether or not
  *                     interactive form elements are rendered in the display
  *                     layer. If so, we do not render them on canvas as well.
- * @property {Array}  [transform] - Additional transform, applied
+ * @property {Array<any>}  [transform] - Additional transform, applied
  *                    just before viewport transform.
  * @property {Object} [imageLayer] - An object that has beginLayout,
  *                    endLayout and appendImage functions.
@@ -894,14 +929,14 @@ class PDFDocumentProxy {
  * PDF page operator list.
  *
  * @typedef {Object} PDFOperatorList
- * @property {Array} fnArray - Array containing the operator functions.
- * @property {Array} argsArray - Array containing the arguments of the
- *                               functions.
+ * @property {Array<Function>} fnArray - Array containing the operator
+ *                                       functions.
+ * @property {Array<any>} argsArray - Array containing the arguments of the
+ *                                    functions.
  */
 
 /**
  * Proxy to a PDFPage in the worker thread.
- * @alias PDFPageProxy
  */
 class PDFPageProxy {
   constructor(pageIndex, pageInfo, transport, pdfBug = false) {
@@ -920,21 +955,21 @@ class PDFPageProxy {
   }
 
   /**
-   * @return {number} Page number of the page. First page is 1.
+   * @type {number} Page number of the page. First page is 1.
    */
   get pageNumber() {
     return this.pageIndex + 1;
   }
 
   /**
-   * @return {number} The number of degrees the page is rotated clockwise.
+   * @type {number} The number of degrees the page is rotated clockwise.
    */
   get rotate() {
     return this._pageInfo.rotate;
   }
 
   /**
-   * @return {Object} The reference that points to this page. It has 'num' and
+   * @type {Object} The reference that points to this page. It has 'num' and
    * 'gen' properties.
    */
   get ref() {
@@ -942,19 +977,26 @@ class PDFPageProxy {
   }
 
   /**
-   * @return {number} The default size of units in 1/72nds of an inch.
+   * @type {number} The default size of units in 1/72nds of an inch.
    */
   get userUnit() {
     return this._pageInfo.userUnit;
   }
 
   /**
-   * @return {Array} An array of the visible portion of the PDF page in the
-   * user space units - [x1, y1, x2, y2].
+   * @type {Array<number>} An array of the visible portion of the PDF page in
+   * the user space units - [x1, y1, x2, y2].
    */
   get view() {
     return this._pageInfo.view;
   }
+
+  /**
+   * TODO https://github.com/mozilla/pdf.js/pull/10575
+   * @typedef {Object} PageViewport
+   * @property {number} width
+   * @property {number} height
+   */
 
   /**
    * @param {GetViewportParameters} params - Viewport parameters.
@@ -979,8 +1021,8 @@ class PDFPageProxy {
 
   /**
    * @param {GetAnnotationsParameters} params - Annotation parameters.
-   * @return {Promise} A promise that is resolved with an {Array} of the
-   * annotation objects.
+   * @return {Promise< Array<any> >} A promise that is resolved with an {Array}
+   * of the annotation objects.
    */
   getAnnotations({ intent = null, } = {}) {
     if (!this.annotationsPromise || this.annotationsIntent !== intent) {
@@ -1108,8 +1150,8 @@ class PDFPageProxy {
   }
 
   /**
-   * @return {Promise} A promise resolved with an {@link PDFOperatorList}
-   *   object that represents page's operator list.
+   * @return {Promise<PDFOperatorList>} A promise resolved with an
+   *   {@link PDFOperatorList} object that represents page's operator list.
    */
   getOperatorList() {
     function operatorListChanged() {
@@ -1173,7 +1215,7 @@ class PDFPageProxy {
 
   /**
    * @param {getTextContentParameters} params - getTextContent parameters.
-   * @return {Promise} That is resolved a {@link TextContent}
+   * @return {Promise<TextContent>} That is resolved a {@link TextContent}
    * object that represent the page text content.
    */
   getTextContent(params = {}) {
@@ -2528,7 +2570,7 @@ class RenderTask {
 
   /**
    * Promise for rendering task completion.
-   * @return {Promise}
+   * @type {Promise<void>}
    */
   get promise() {
     return this._internalRenderTask.capability.promise;
@@ -2548,8 +2590,8 @@ class RenderTask {
    *
    * @param {function} onFulfilled The callback for the rendering completion.
    * @param {function} onRejected The callback for the rendering failure.
-   * @return {Promise} A promise that is resolved after the onFulfilled or
-   *                   onRejected callback.
+   * @return {Promise<any>} A promise that is resolved after the onFulfilled or
+   *                        onRejected callback.
    */
   then(onFulfilled, onRejected) {
     deprecated('RenderTask.then method, use the `promise` getter instead.');

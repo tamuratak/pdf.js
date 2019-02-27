@@ -36,7 +36,8 @@ class AnnotationFactory {
    * @param {Object} ref
    * @param {PDFManager} pdfManager
    * @param {Object} idFactory
-   * @return {Promise} A promise that is resolved with an {Annotation} instance.
+   * @return {Promise<Annotation>} A promise that is resolved with an
+   *   {Annotation} instance.
    */
   static create(xref, ref, pdfManager, idFactory) {
     return pdfManager.ensure(this, '_create',
@@ -330,7 +331,8 @@ class Annotation {
    *
    * @public
    * @memberof Annotation
-   * @param {Array} rectangle - The rectangle array with exactly four entries
+   * @param {Array<number>} rectangle - The rectangle array with exactly
+   *                                    four entries
    */
   setRectangle(rectangle) {
     if (Array.isArray(rectangle) && rectangle.length === 4) {
@@ -346,9 +348,9 @@ class Annotation {
    *
    * @public
    * @memberof Annotation
-   * @param {Array} color - The color array containing either 0
-   *                        (transparent), 1 (grayscale), 3 (RGB) or
-   *                        4 (CMYK) elements
+   * @param {Array<number>} color - The color array containing either 0
+   *                                (transparent), 1 (grayscale), 3 (RGB) or
+   *                                4 (CMYK) elements
    */
   setColor(color) {
     const rgbColor = new Uint8ClampedArray(3);
@@ -530,7 +532,7 @@ class AnnotationBorderStyle {
    *
    * @public
    * @memberof AnnotationBorderStyle
-   * @param {integer} width - The width.
+   * @param {number} width - The width.
    * @param {Array} rect - The annotation `Rect` entry.
    */
   setWidth(width, rect = [0, 0, 0, 0]) {
@@ -563,6 +565,11 @@ class AnnotationBorderStyle {
       this.width = width;
     }
   }
+
+  /**
+   * TODO https://github.com/mozilla/pdf.js/pull/10575
+   * @typedef {any} Name
+   */
 
   /**
    * Set the style.
@@ -607,7 +614,7 @@ class AnnotationBorderStyle {
    *
    * @public
    * @memberof AnnotationBorderStyle
-   * @param {Array} dashArray - The dash array with at least one element
+   * @param {Array<number>} dashArray - The dash array with at least one element
    */
   setDashArray(dashArray) {
     // We validate the dash array, but we do not use it because CSS does not
@@ -642,7 +649,7 @@ class AnnotationBorderStyle {
    *
    * @public
    * @memberof AnnotationBorderStyle
-   * @param {integer} radius - The horizontal corner radius
+   * @param {number} radius - The horizontal corner radius
    */
   setHorizontalCornerRadius(radius) {
     if (Number.isInteger(radius)) {
@@ -655,7 +662,7 @@ class AnnotationBorderStyle {
    *
    * @public
    * @memberof AnnotationBorderStyle
-   * @param {integer} radius - The vertical corner radius
+   * @param {number} radius - The vertical corner radius
    */
   setVerticalCornerRadius(radius) {
     if (Number.isInteger(radius)) {
