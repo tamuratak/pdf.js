@@ -54,6 +54,7 @@ var IMAGE_DECODERS_DIR = BUILD_DIR + 'image_decoders';
 var DEFAULT_PREFERENCES_DIR = BUILD_DIR + 'default_preferences/';
 var MINIFIED_DIR = BUILD_DIR + 'minified/';
 var JSDOC_BUILD_DIR = BUILD_DIR + 'jsdoc/';
+var DTS_BUILD_DIR = BUILD_DIR + 'dts/';
 var GH_PAGES_DIR = BUILD_DIR + 'gh-pages/';
 var SRC_DIR = 'src/';
 var LIB_DIR = BUILD_DIR + 'lib/';
@@ -989,6 +990,25 @@ gulp.task('jsdoc', function (done) {
   });
 });
 
+gulp.task('dts', function (done) {
+  console.log();
+  console.log('### Generating typescript definitions');
+
+  var JSDOC_FILES = [
+    'src/display/api.js',
+    'src/shared/util.js',
+    'src/core/annotation.js'
+  ];
+
+  rimraf(DTS_BUILD_DIR, function () {
+    mkdirp(DTS_BUILD_DIR, function () {
+      var command = '"node_modules/.bin/jsdoc" -t node_modules/tsd-jsdoc/dist' +
+                    ' -d ' + DTS_BUILD_DIR + ' ' + JSDOC_FILES.join(' ');
+      exec(command, done);
+    });
+  });
+});
+
 gulp.task('lib', gulp.series('buildnumber', 'default_preferences', function() {
   // When we create a bundle, webpack is run on the source and it will replace
   // require with __webpack_require__. When we want to use the real require,
@@ -1318,7 +1338,7 @@ gulp.task('web', gulp.series('generic', 'jsdoc', 'gh-pages-prepare',
                              'wintersmith', 'gh-pages-git'));
 
 gulp.task('dist-pre', gulp.series('generic', 'components', 'image_decoders',
-                                  'lib', 'minified', function() {
+                                  'lib', 'minified', 'dts', function() {
   var VERSION = getVersionJSON().version;
 
   console.log();
@@ -1343,6 +1363,7 @@ gulp.task('dist-pre', gulp.series('generic', 'components', 'image_decoders',
     name: DIST_NAME,
     version: VERSION,
     main: 'build/pdf.js',
+    types: 'build/pdf.d.ts',
     description: DIST_DESCRIPTION,
     keywords: DIST_KEYWORDS,
     homepage: DIST_HOMEPAGE,
@@ -1420,6 +1441,9 @@ gulp.task('dist-pre', gulp.series('generic', 'components', 'image_decoders',
         .pipe(gulp.dest(DIST_DIR + 'image_decoders')),
     gulp.src(LIB_DIR + '**/*', { base: LIB_DIR, })
         .pipe(gulp.dest(DIST_DIR + 'lib/')),
+    gulp.src(DTS_BUILD_DIR + 'types.d.ts')
+        .pipe(rename('pdf.d.ts'))
+        .pipe(gulp.dest(DIST_DIR + 'build/')),
   ]);
 }));
 
