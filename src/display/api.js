@@ -436,7 +436,6 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
 /**
  * PDF document loading operation.
  * @class
- * @alias PDFDocumentLoadingTask
  */
 const PDFDocumentLoadingTask = (function PDFDocumentLoadingTaskClosure() {
   let nextDocumentId = 0;
@@ -902,7 +901,6 @@ class PDFDocumentProxy {
 
 /**
  * Proxy to a PDFPage in the worker thread.
- * @class PDFPageProxy
  */
 class PDFPageProxy {
   constructor(pageIndex, pageInfo, transport, pdfBug = false) {
