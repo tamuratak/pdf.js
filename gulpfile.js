@@ -123,6 +123,16 @@ function safeSpawnSync(command, parameters, options) {
   return result;
 }
 
+function startNode(args, options) {
+  // Node.js decreased the maximum header size from 80 KB to 8 KB in newer
+  // releases, which is not sufficient for some of our reference test files
+  // (such as `issue6360.pdf`), so we need to restore this value. Note that
+  // this argument needs to be before all other arguments as it needs to be
+  // passed to the Node.js process itself and not to the script that it runs.
+  args.unshift('--max-http-header-size=80000');
+  return spawn('node', args, options);
+}
+
 function createStringSource(filename, content) {
   var source = stream.Readable({ objectMode: true, });
   source._read = function () {
@@ -151,21 +161,6 @@ function createWebpackConfig(defines, output) {
   var skipBabel = bundleDefines.SKIP_BABEL ||
                   process.env['SKIP_BABEL'] === 'true';
 
-  // TODO: Remove this hack once the Webpack regression has been fixed; see
-  //       https://github.com/mozilla/pdf.js/issues/10177
-  function babelPluginReplaceNonWebPackRequire(babel) {
-    return {
-      visitor: {
-        Identifier(path, state) {
-          if (path.node.name === '__non_webpack_require__') {
-            path.replaceWith(
-              babel.types.identifier('TEMPORARY_NON_WEBPACK_REQUIRE_HACK'));
-          }
-        },
-      },
-    };
-  }
-
   // Required to expose e.g., the `window` object.
   output.globalObject = 'this';
 
@@ -190,8 +185,12 @@ function createWebpackConfig(defines, output) {
       rules: [
         {
           loader: 'babel-loader',
-          // babel is too slow
-          exclude: /src[\\\/]core[\\\/](glyphlist|unicode)/,
+          // `core-js` (see https://github.com/zloirock/core-js/issues/514),
+          // `web-streams-polyfill` (already using a transpiled file), and
+          // `src/core/{glyphlist,unicode}.js` (Babel is too slow for those)
+          // should be excluded from processing.
+          // eslint-disable-next-line max-len
+          exclude: /(node_modules[\\\/]core-js|node_modules[\\\/]web-streams-polyfill|src[\\\/]core[\\\/](glyphlist|unicode))/,
           options: {
             presets: skipBabel ? undefined : ['@babel/preset-env'],
             plugins: [
@@ -200,7 +199,6 @@ function createWebpackConfig(defines, output) {
                 'helpers': false,
                 'regenerator': true,
               }],
-              babelPluginReplaceNonWebPackRequire, // Temporary hack.
             ],
           },
         },
@@ -265,12 +263,6 @@ function replaceWebpackRequire() {
   return replace('__webpack_require__', '__w_pdfjs_require__');
 }
 
-function replaceTemporaryNonWebpackRequireHack() {
-  // TODO: Remove this hack once the Webpack regression has been fixed; see
-  //       https://github.com/mozilla/pdf.js/issues/10177
-  return replace('TEMPORARY_NON_WEBPACK_REQUIRE_HACK', 'require');
-}
-
 function replaceJSRootName(amdName, jsName) {
   // Saving old-style JS module name.
   return replace('root["' + amdName + '"] = factory()',
@@ -293,7 +285,6 @@ function createBundle(defines) {
   var mainOutput = gulp.src('./src/pdf.js')
     .pipe(webpack2Stream(mainFileConfig))
     .pipe(replaceWebpackRequire())
-    .pipe(replaceTemporaryNonWebpackRequireHack()) // Temporary hack.
     .pipe(replaceJSRootName(mainAMDName, 'pdfjsLib'));
 
   var workerAMDName = 'pdfjs-dist/build/pdf.worker';
@@ -309,7 +300,6 @@ function createBundle(defines) {
   var workerOutput = gulp.src('./src/pdf.worker.js')
     .pipe(webpack2Stream(workerFileConfig))
     .pipe(replaceWebpackRequire())
-    .pipe(replaceTemporaryNonWebpackRequireHack()) // Temporary hack.
     .pipe(replaceJSRootName(workerAMDName, 'pdfjsWorker'));
   return merge([mainOutput, workerOutput]);
 }
@@ -321,8 +311,7 @@ function createWebBundle(defines) {
     filename: viewerOutputName,
   });
   return gulp.src('./web/viewer.js')
-    .pipe(webpack2Stream(viewerFileConfig))
-    .pipe(replaceTemporaryNonWebpackRequireHack()); // Temporary hack.
+             .pipe(webpack2Stream(viewerFileConfig));
 }
 
 function createComponentsBundle(defines) {
@@ -338,7 +327,6 @@ function createComponentsBundle(defines) {
   return gulp.src('./web/pdf_viewer.component.js')
     .pipe(webpack2Stream(componentsFileConfig))
     .pipe(replaceWebpackRequire())
-    .pipe(replaceTemporaryNonWebpackRequireHack()) // Temporary hack.
     .pipe(replaceJSRootName(componentsAMDName, 'pdfjsViewer'));
 }
 
@@ -355,7 +343,6 @@ function createImageDecodersBundle(defines) {
   return gulp.src('./src/pdf.image_decoders.js')
     .pipe(webpack2Stream(componentsFileConfig))
     .pipe(replaceWebpackRequire())
-    .pipe(replaceTemporaryNonWebpackRequireHack()) // Temporary hack.
     .pipe(replaceJSRootName(imageDecodersAMDName, 'pdfjsImageDecoders'));
 }
 
@@ -393,7 +380,7 @@ function getTempFile(prefix, suffix) {
 
 function createTestSource(testsName, bot) {
   var source = stream.Readable({ objectMode: true, });
-  source._read = function () {
+  source._read = function() {
     console.log();
     console.log('### Running ' + testsName + ' tests');
 
@@ -433,10 +420,11 @@ function createTestSource(testsName, bot) {
       args.push('--strictVerify');
     }
 
-    var testProcess = spawn('node', args, { cwd: TEST_DIR, stdio: 'inherit', });
+    var testProcess = startNode(args, { cwd: TEST_DIR, stdio: 'inherit', });
     testProcess.on('close', function (code) {
       source.push(null);
     });
+    return undefined;
   };
   return source;
 }
@@ -462,7 +450,7 @@ function makeRef(done, bot) {
     args.push('--noPrompts', '--strictVerify');
   }
   args.push('--browserManifestFile=' + PDF_BROWSERS);
-  var testProcess = spawn('node', args, { cwd: TEST_DIR, stdio: 'inherit', });
+  var testProcess = startNode(args, { cwd: TEST_DIR, stdio: 'inherit', });
   testProcess.on('close', function (code) {
     done();
   });
@@ -555,7 +543,7 @@ gulp.task('default_preferences-pre', function() {
     },
   };
   var preprocessor2 = require('./external/builder/preprocessor2.js');
-  var buildLib = merge([
+  return merge([
     gulp.src([
       'src/{display,shared}/*.js',
       '!src/shared/{cffStandardStrings,fonts_utils}.js',
@@ -563,15 +551,10 @@ gulp.task('default_preferences-pre', function() {
     ], { base: 'src/', }),
     gulp.src([
       'web/*.js',
-      '!web/{pdfjs,preferences,viewer}.js',
+      '!web/{app,pdfjs,preferences,viewer}.js',
     ], { base: '.', }),
   ]).pipe(transform('utf8', preprocess))
     .pipe(gulp.dest(DEFAULT_PREFERENCES_DIR + 'lib/'));
-  return merge([
-    buildLib,
-    gulp.src('external/{streams,url}/*.js', { base: '.', })
-      .pipe(gulp.dest(DEFAULT_PREFERENCES_DIR)),
-  ]);
 });
 
 gulp.task('default_preferences', gulp.series('default_preferences-pre',
@@ -978,7 +961,6 @@ gulp.task('jsdoc', function (done) {
     'src/doc_helper.js',
     'src/display/api.js',
     'src/shared/util.js',
-    'src/core/annotation.js'
   ];
 
   rimraf(JSDOC_BUILD_DIR, function () {
@@ -1068,7 +1050,7 @@ gulp.task('lib', gulp.series('buildnumber', 'default_preferences', function() {
   var licenseHeaderLibre =
     fs.readFileSync('./src/license_header_libre.js').toString();
   var preprocessor2 = require('./external/builder/preprocessor2.js');
-  var buildLib = merge([
+  return merge([
     gulp.src([
       'src/{core,display,shared}/*.js',
       '!src/shared/{cffStandardStrings,fonts_utils}.js',
@@ -1082,13 +1064,6 @@ gulp.task('lib', gulp.series('buildnumber', 'default_preferences', function() {
     gulp.src('test/unit/*.js', { base: '.', }),
   ]).pipe(transform('utf8', preprocess))
     .pipe(gulp.dest('build/lib/'));
-  return merge([
-    buildLib,
-    gulp.src('external/streams/streams-lib.js', { base: '.', })
-      .pipe(gulp.dest('build/')),
-    gulp.src('external/url/url-lib.js', { base: '.', })
-      .pipe(gulp.dest('build/')),
-  ]);
 }));
 
 gulp.task('publish', gulp.series('generic', function (done) {
@@ -1193,7 +1168,7 @@ gulp.task('baseline', function (done) {
 gulp.task('unittestcli', gulp.series('testing-pre', 'lib', function(done) {
   var options = ['node_modules/jasmine/bin/jasmine',
                  'JASMINE_CONFIG_PATH=test/unit/clitests.json'];
-  var jasmineProcess = spawn('node', options, { stdio: 'inherit', });
+  var jasmineProcess = startNode(options, { stdio: 'inherit', });
   jasmineProcess.on('close', function(code) {
     if (code !== 0) {
       done(new Error('Unit tests failed.'));
@@ -1210,7 +1185,7 @@ gulp.task('lint', gulp.series('default_preferences', function(done) {
   // Ensure that we lint the Firefox specific *.jsm files too.
   var options = ['node_modules/eslint/bin/eslint', '--ext', '.js,.jsm', '.',
                  '--report-unused-disable-directives'];
-  var esLintProcess = spawn('node', options, { stdio: 'inherit', });
+  var esLintProcess = startNode(options, { stdio: 'inherit', });
   esLintProcess.on('close', function (code) {
     if (code !== 0) {
       done(new Error('ESLint failed.'));
@@ -1293,9 +1268,10 @@ gulp.task('gh-pages-prepare', function () {
 gulp.task('wintersmith', function (done) {
   var wintersmith = require('wintersmith');
   var env = wintersmith('docs/config.json');
-  env.build(GH_PAGES_DIR, function (error) {
+  env.build(GH_PAGES_DIR, function(error) {
     if (error) {
-      return done(error);
+      done(error);
+      return;
     }
     replaceInFile(GH_PAGES_DIR + '/getting_started/index.html',
                   /STABLE_VERSION/g, config.stableVersion);
@@ -1405,10 +1381,6 @@ gulp.task('dist-pre', gulp.series('generic', 'components', 'image_decoders',
     createStringSource('bower.json', JSON.stringify(bowerManifest, null, 2));
 
   return merge([
-    gulp.src('external/streams/streams-lib.js', { base: '.', })
-      .pipe(gulp.dest('build/dist/')),
-    gulp.src('external/url/url-lib.js', { base: '.', })
-      .pipe(gulp.dest('build/dist/')),
     packageJsonSrc.pipe(gulp.dest(DIST_DIR)),
     bowerJsonSrc.pipe(gulp.dest(DIST_DIR)),
     vfs.src('external/dist/**/*',

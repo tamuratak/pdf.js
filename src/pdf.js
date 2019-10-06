@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* eslint-disable no-unused-vars, no-restricted-globals */
+/* eslint-disable no-unused-vars */
 
 'use strict';
 
@@ -37,15 +37,17 @@ if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
     pdfjsDisplayAPI.setPDFNetworkStreamFactory((params) => {
       return new PDFNodeStream(params);
     });
-  } else if (typeof Response !== 'undefined' && 'body' in Response.prototype &&
-             typeof ReadableStream !== 'undefined') {
-    let PDFFetchStream = require('./display/fetch_stream.js').PDFFetchStream;
-    pdfjsDisplayAPI.setPDFNetworkStreamFactory((params) => {
-      return new PDFFetchStream(params);
-    });
   } else {
     let PDFNetworkStream = require('./display/network.js').PDFNetworkStream;
+    let PDFFetchStream;
+    if (pdfjsDisplayDisplayUtils.isFetchSupported()) {
+      PDFFetchStream = require('./display/fetch_stream.js').PDFFetchStream;
+    }
     pdfjsDisplayAPI.setPDFNetworkStreamFactory((params) => {
+      if (PDFFetchStream &&
+          pdfjsDisplayDisplayUtils.isValidFetchUrl(params.url)) {
+        return new PDFFetchStream(params);
+      }
       return new PDFNetworkStream(params);
     });
   }
@@ -65,13 +67,13 @@ if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
       return true;
     }
   };
-  if (typeof Response !== 'undefined' && 'body' in Response.prototype &&
-      typeof ReadableStream !== 'undefined' && isChromeWithFetchCredentials()) {
+  if (pdfjsDisplayDisplayUtils.isFetchSupported() &&
+      isChromeWithFetchCredentials()) {
     PDFFetchStream = require('./display/fetch_stream.js').PDFFetchStream;
   }
   pdfjsDisplayAPI.setPDFNetworkStreamFactory((params) => {
-    if (PDFFetchStream && /^https?:/i.test(params.url)) {
-      // "fetch" is only supported for http(s), not file/ftp.
+    if (PDFFetchStream &&
+        pdfjsDisplayDisplayUtils.isValidFetchUrl(params.url)) {
       return new PDFFetchStream(params);
     }
     return new PDFNetworkStream(params);
@@ -105,13 +107,13 @@ exports.removeNullCharacters = pdfjsSharedUtil.removeNullCharacters;
 exports.shadow = pdfjsSharedUtil.shadow;
 exports.Util = pdfjsSharedUtil.Util;
 exports.ReadableStream = pdfjsSharedUtil.ReadableStream;
-exports.URL = pdfjsSharedUtil.URL;
 exports.RenderingCancelledException =
   pdfjsDisplayDisplayUtils.RenderingCancelledException;
 exports.getFilenameFromUrl = pdfjsDisplayDisplayUtils.getFilenameFromUrl;
 exports.LinkTarget = pdfjsDisplayDisplayUtils.LinkTarget;
 exports.addLinkAttributes = pdfjsDisplayDisplayUtils.addLinkAttributes;
 exports.loadScript = pdfjsDisplayDisplayUtils.loadScript;
+exports.PDFDateString = pdfjsDisplayDisplayUtils.PDFDateString;
 exports.GlobalWorkerOptions = pdfjsDisplayWorkerOptions.GlobalWorkerOptions;
 exports.apiCompatibilityParams =
   pdfjsDisplayAPICompatibility.apiCompatibilityParams;

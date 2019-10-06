@@ -16,6 +16,7 @@
 import { assert, CMapCompressionType } from '../../src/shared/util';
 import isNodeJS from '../../src/shared/is_node';
 import { isRef } from '../../src/core/primitives';
+import { Page } from '../../src/core/document';
 
 class DOMFileReaderFactory {
   static async fetch(params) {
@@ -99,32 +100,31 @@ class NodeCMapReaderFactory {
     this.isCompressed = isCompressed;
   }
 
-  fetch({ name, }) {
+  async fetch({ name, }) {
     if (!this.baseUrl) {
-      return Promise.reject(new Error(
+      throw new Error(
         'The CMap "baseUrl" parameter must be specified, ensure that ' +
-        'the "cMapUrl" and "cMapPacked" API parameters are provided.'));
+        'the "cMapUrl" and "cMapPacked" API parameters are provided.');
     }
     if (!name) {
-      return Promise.reject(new Error('CMap name must be specified.'));
+      throw new Error('CMap name must be specified.');
     }
-    return new Promise((resolve, reject) => {
-      let url = this.baseUrl + name + (this.isCompressed ? '.bcmap' : '');
+    const url = this.baseUrl + name + (this.isCompressed ? '.bcmap' : '');
+    const compressionType = (this.isCompressed ? CMapCompressionType.BINARY :
+                                                 CMapCompressionType.NONE);
 
-      let fs = require('fs');
+    return new Promise((resolve, reject) => {
+      const fs = require('fs');
       fs.readFile(url, (error, data) => {
         if (error || !data) {
-          reject(new Error('Unable to load ' +
-                           (this.isCompressed ? 'binary ' : '') +
-                           'CMap at: ' + url));
+          reject(new Error(error));
           return;
         }
-        resolve({
-          cMapData: new Uint8Array(data),
-          compressionType: this.isCompressed ?
-            CMapCompressionType.BINARY : CMapCompressionType.NONE,
-        });
+        resolve({ cMapData: new Uint8Array(data), compressionType, });
       });
+    }).catch((reason) => {
+      throw new Error(`Unable to load ${this.isCompressed ? 'binary ' : ''}` +
+                      `CMap at: ${url}`);
     });
   }
 }
@@ -159,6 +159,18 @@ class XRefMock {
   }
 }
 
+function createIdFactory(pageIndex) {
+  const page = new Page({
+    pdfManager: {
+      get docId() {
+        return 'd0';
+      },
+    },
+    pageIndex,
+  });
+  return page.idFactory;
+}
+
 export {
   DOMFileReaderFactory,
   NodeFileReaderFactory,
@@ -167,4 +179,5 @@ export {
   XRefMock,
   buildGetDocumentParams,
   TEST_PDFS_PATH,
+  createIdFactory,
 };
