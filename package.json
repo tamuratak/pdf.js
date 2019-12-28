@@ -43,6 +43,7 @@
     "terser": "^4.4.3",
     "through2": "^3.0.1",
     "ttest": "^2.1.0",
+    "typescript": "^3.7.4",
     "typogr": "^0.6.8",
     "vinyl": "^2.2.0",
     "vinyl-fs": "^3.0.3",
