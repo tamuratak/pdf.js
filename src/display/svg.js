@@ -1278,6 +1278,8 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
         d = current.path.getAttributeNS(null, "d") + d;
       } else {
         current.path = this.svgFactory.createElement("svg:path");
+        const style = `opacity: ${this.current.strokeAlpha};`;
+        current.path.setAttributeNS(null, 'style', style);
         this._ensureTransformGroup().appendChild(current.path);
       }
 
@@ -1523,7 +1525,10 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
         "transform",
         `scale(${pf(1 / w)} ${pf(-1 / h)})`
       );
-
+      if (this.current.fillAlpha && this.current.fillAlpha !== 1) {
+        const style = `opacity: ${this.current.fillAlpha};`;
+        imgEl.setAttributeNS(null, 'style', style);
+      }
       this._ensureTransformGroup().appendChild(imgEl);
     }
 
@@ -1564,6 +1569,10 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
         mask.appendChild(imgEl);
       } else {
         this._ensureTransformGroup().appendChild(imgEl);
+        if (this.current.fillAlpha && this.current.fillAlpha !== 1) {
+          const style = `opacity: ${this.current.fillAlpha};`;
+          imgEl.setAttributeNS(null, 'style', style);
+        }
       }
     }
 

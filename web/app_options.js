@@ -110,7 +110,7 @@ const defaultOptions = {
    */
   renderer: {
     /** @type {string} */
-    value: "canvas",
+    value: "svg",
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE,
   },
   renderInteractiveForms: {
