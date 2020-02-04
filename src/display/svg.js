@@ -324,9 +324,7 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       this.strokeColor = "#000000";
 
       this.fillAlpha = 1;
-      this.fillAlphaStack = [];
       this.strokeAlpha = 1;
-      this.strokeAlphaStack = [];
       this.lineWidth = 1;
       this.lineJoin = "";
       this.lineCap = "";
@@ -343,8 +341,7 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
 
       this.maskId = "";
 
-      this.globalCompositeOperation = "multiply";
-      this.globalCompositeOperationStack = [];
+      this.globalCompositeOperation = "source-over";
     }
 
     clone() {
@@ -474,9 +471,6 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       const old = this.current;
       this.extraStack.push(old);
       this.current = old.clone();
-//      this.current.globalCompositeOperation = undefined;
-//      this.current.strokeAlpha = 1;
-//      this.current.fillAlpha = 1;
     }
 
     restore() {
@@ -1548,10 +1542,8 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
         "transform",
         `scale(${pf(1 / w)} ${pf(-1 / h)})`
       );
-      if (this.current.fillAlpha && this.current.fillAlpha !== 1) {
-        const style = `opacity: ${this.current.fillAlpha};  mix-blend-mode: ${this.current.globalCompositeOperation};`;
-        imgEl.setAttributeNS(null, 'style', style);
-      }
+      const style = `opacity: ${this.current.fillAlpha};  mix-blend-mode: ${this.current.globalCompositeOperation};`;
+      imgEl.setAttributeNS(null, 'style', style);
       this._ensureTransformGroup().appendChild(imgEl);
     }
 
@@ -1592,10 +1584,8 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
         mask.appendChild(imgEl);
       } else {
         this._ensureTransformGroup().appendChild(imgEl);
-        if (this.current.fillAlpha && this.current.fillAlpha !== 1) {
-          const style = `opacity: ${this.current.fillAlpha}; mix-blend-mode: ${this.current.globalCompositeOperation};`;
-          imgEl.setAttributeNS(null, 'style', style);
-        }
+        const style = `opacity: ${this.current.fillAlpha}; mix-blend-mode: ${this.current.globalCompositeOperation};`;
+        imgEl.setAttributeNS(null, 'style', style);
       }
 
     }
