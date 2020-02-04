@@ -1016,6 +1016,7 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
             this.ctx.globalCompositeOperation = value;
             break;
           case "SMask":
+            break;
             if (this.current.activeSMask) {
               // If SMask is currrenly used, it needs to be suspended or
               // finished. Suspend only makes sense when at least one save()
