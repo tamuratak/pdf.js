@@ -324,7 +324,9 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       this.strokeColor = "#000000";
 
       this.fillAlpha = 1;
+      this.fillAlphaStack = [];
       this.strokeAlpha = 1;
+      this.strokeAlphaStack = [];
       this.lineWidth = 1;
       this.lineJoin = "";
       this.lineCap = "";
@@ -340,6 +342,9 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       this.clipGroup = null;
 
       this.maskId = "";
+
+      this.globalCompositeOperation = "multiply";
+      this.globalCompositeOperationStack = [];
     }
 
     clone() {
@@ -469,6 +474,9 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       const old = this.current;
       this.extraStack.push(old);
       this.current = old.clone();
+//      this.current.globalCompositeOperation = undefined;
+//      this.current.strokeAlpha = 1;
+//      this.current.fillAlpha = 1;
     }
 
     restore() {
@@ -1278,7 +1286,7 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
         d = current.path.getAttributeNS(null, "d") + d;
       } else {
         current.path = this.svgFactory.createElement("svg:path");
-        const style = `opacity: ${this.current.strokeAlpha};`;
+        const style = `opacity: 0.8; mix-blend-mode: multiply;`;
         current.path.setAttributeNS(null, 'style', style);
         this._ensureTransformGroup().appendChild(current.path);
       }
@@ -1405,7 +1413,16 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
             this.setStrokeAlpha(value);
             break;
           case "ca":
+            console.log(value);
             this.setFillAlpha(value);
+            break;
+          case "BM":
+            console.log(value);
+            this.current.globalCompositeOperation = value;
+            break;
+          case "SMask":
+//            this.setStrokeAlpha(1);
+            this.setFillAlpha(1);
             break;
           default:
             warn(`Unimplemented graphic state operator ${key}`);
@@ -1419,6 +1436,12 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       if (current.element) {
         current.element.setAttributeNS(null, "fill", current.fillColor);
         current.element.setAttributeNS(null, "fill-opacity", current.fillAlpha);
+       /* if (this.current.globalCompositeOperation) {
+          current.element.setAttributeNS(
+            null,
+            "style",
+            "mix-blend-mode: " + this.current.globalCompositeOperation);
+        } */
         this.endPath();
       }
     }
@@ -1526,7 +1549,7 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
         `scale(${pf(1 / w)} ${pf(-1 / h)})`
       );
       if (this.current.fillAlpha && this.current.fillAlpha !== 1) {
-        const style = `opacity: ${this.current.fillAlpha};`;
+        const style = `opacity: ${this.current.fillAlpha};  mix-blend-mode: ${this.current.globalCompositeOperation};`;
         imgEl.setAttributeNS(null, 'style', style);
       }
       this._ensureTransformGroup().appendChild(imgEl);
@@ -1570,10 +1593,11 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       } else {
         this._ensureTransformGroup().appendChild(imgEl);
         if (this.current.fillAlpha && this.current.fillAlpha !== 1) {
-          const style = `opacity: ${this.current.fillAlpha};`;
+          const style = `opacity: ${this.current.fillAlpha}; mix-blend-mode: ${this.current.globalCompositeOperation};`;
           imgEl.setAttributeNS(null, 'style', style);
         }
       }
+
     }
 
     paintImageMaskXObject(imgData) {
