@@ -806,6 +806,15 @@ var PartialEvaluator = (function PartialEvaluatorClosure() {
       var gStateObj = [];
       var gStateKeys = gState.getKeys();
       var promise = Promise.resolve();
+      let isAIS = false;
+      for (var i = 0, ii = gStateKeys.length; i < ii; i++) {
+        const key = gStateKeys[i];
+        const value = gState.get(key);
+        if (key === "AIS" && value) {
+          warn("Unsupported SMask with AIS = true");
+          isAIS = true;
+        }
+      }
       for (var i = 0, ii = gStateKeys.length; i < ii; i++) {
         const key = gStateKeys[i];
         const value = gState.get(key);
@@ -842,7 +851,7 @@ var PartialEvaluator = (function PartialEvaluatorClosure() {
             gStateObj.push([key, normalizeBlendMode(value)]);
             break;
           case "SMask":
-            if (isName(value, "None")) {
+            if (isName(value, "None") || isAIS) {
               gStateObj.push([key, false]);
               break;
             }
