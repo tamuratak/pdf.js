@@ -406,6 +406,7 @@ function getShadingPatternFromIR(raw) {
   return shadingIR.fromIR(raw);
 }
 
+/** @type {Object} */
 var TilingPattern = (function TilingPatternClosure() {
   var PaintType = {
     COLORED: 1,
