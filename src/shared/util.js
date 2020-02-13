@@ -404,6 +404,7 @@ function shadow(obj, prop, value) {
   return value;
 }
 
+/** @type {Error} */
 const BaseException = (function BaseExceptionClosure() {
   function BaseException(message) {
     if (this.constructor === BaseException) {
