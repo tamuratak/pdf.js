@@ -413,6 +413,7 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
     });
 }
 
+/** @type {Object} */
 const PDFDocumentLoadingTask = (function PDFDocumentLoadingTaskClosure() {
   let nextDocumentId = 0;
 
@@ -1547,6 +1548,7 @@ class LoopbackPort {
  *   constants from {VerbosityLevel} should be used.
  */
 
+ /** @type {Object} */
 const PDFWorker = (function PDFWorkerClosure() {
   const pdfWorkerPorts = new WeakMap();
   let isWorkerDisabled = false;
