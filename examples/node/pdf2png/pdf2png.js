@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+var path = require("path");
 var Canvas = require("canvas");
 var assert = require("assert").strict;
 var fs = require("fs");
@@ -56,8 +57,30 @@ var pdfURL = "../../../web/compressed.tracemonkey-pldi-09.pdf";
 // Read the PDF file into a typed array so PDF.js can load it.
 var rawData = new Uint8Array(fs.readFileSync(pdfURL));
 
+class NodeCMapReaderFactory {
+  constructor() {
+      this.cmapDir = path.join(__dirname, '../../../node_modules/pdfjs-dist/cmaps/')
+  }
+
+  fetch(arg) {
+      const name = arg.name
+      if (!name) {
+          return Promise.reject(new Error('CMap name must be specified.'))
+      }
+      const file = this.cmapDir + name + '.bcmap'
+      const data = fs.readFileSync(file)
+      return Promise.resolve({
+          cMapData: new Uint8Array(data),
+          compressionType: 1
+      })
+  }
+}
+
 // Load the PDF file.
-var loadingTask = pdfjsLib.getDocument(rawData);
+var loadingTask = pdfjsLib.getDocument({
+  data: rawData,
+  CMapReaderFactory: NodeCMapReaderFactory
+});
 loadingTask.promise
   .then(function (pdfDocument) {
     console.log("# PDF document loaded.");
