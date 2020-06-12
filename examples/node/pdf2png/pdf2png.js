@@ -59,27 +59,30 @@ var rawData = new Uint8Array(fs.readFileSync(pdfURL));
 
 class NodeCMapReaderFactory {
   constructor() {
-      this.cmapDir = path.join(__dirname, '../../../node_modules/pdfjs-dist/cmaps/')
+    this.cmapDir = path.join(
+      __dirname,
+      "../../../node_modules/pdfjs-dist/cmaps/"
+    );
   }
 
   fetch(arg) {
-      const name = arg.name
-      if (!name) {
-          return Promise.reject(new Error('CMap name must be specified.'))
-      }
-      const file = this.cmapDir + name + '.bcmap'
-      const data = fs.readFileSync(file)
-      return Promise.resolve({
-          cMapData: new Uint8Array(data),
-          compressionType: 1
-      })
+    const name = arg.name;
+    if (!name) {
+      return Promise.reject(new Error("CMap name must be specified."));
+    }
+    const file = this.cmapDir + name + ".bcmap";
+    const data = fs.readFileSync(file);
+    return Promise.resolve({
+      cMapData: new Uint8Array(data),
+      compressionType: 1,
+    });
   }
 }
 
 // Load the PDF file.
 var loadingTask = pdfjsLib.getDocument({
   data: rawData,
-  CMapReaderFactory: NodeCMapReaderFactory
+  CMapReaderFactory: NodeCMapReaderFactory,
 });
 loadingTask.promise
   .then(function (pdfDocument) {
