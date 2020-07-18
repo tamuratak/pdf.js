@@ -101,7 +101,7 @@ function setPDFNetworkStreamFactory(pdfNetworkStreamFactory) {
  *
  * @typedef {Object} DocumentInitParameters
  * @property {string}     [url] - The URL of the PDF.
- * @property {TypedArray|Array|string} [data] - Binary PDF data. Use typed
+ * @property {TypedArray|Array<any>|string} [data] - Binary PDF data. Use typed
  *    arrays (Uint8Array) to improve the memory usage. If PDF data is
  *    BASE64-encoded, use atob() to convert it to a binary string first.
  * @property {Object}     [httpHeaders] - Basic authentication headers.
@@ -1548,7 +1548,7 @@ class LoopbackPort {
  *   constants from {VerbosityLevel} should be used.
  */
 
- /** @type {Object} */
+/** @type {Object} */
 const PDFWorker = (function PDFWorkerClosure() {
   const pdfWorkerPorts = new WeakMap();
   let isWorkerDisabled = false;

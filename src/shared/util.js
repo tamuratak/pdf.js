@@ -504,7 +504,7 @@ function stringToBytes(str) {
 
 /**
  * Gets length of the array (Array, Uint8Array, or string) in bytes.
- * @param {Array|Uint8Array|string} arr
+ * @param {Array<any>|Uint8Array|string} arr
  * @returns {number}
  */
 function arrayByteLength(arr) {
