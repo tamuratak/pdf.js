@@ -413,7 +413,15 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
     });
 }
 
-/** @type {Object} */
+
+/**
+ * @typedef {Object} PDFDocumentLoadingTask
+ *
+ * @property {Promise<PDFWorker>} promise - Promise for document loading task completion.
+ *
+ */
+
+/** @type {PDFDocumentLoadingTask} */
 const PDFDocumentLoadingTask = (function PDFDocumentLoadingTaskClosure() {
   let nextDocumentId = 0;
 
@@ -1548,7 +1556,11 @@ class LoopbackPort {
  *   constants from {VerbosityLevel} should be used.
  */
 
- /** @type {Object} */
+ /**
+  * @typedef {Object} PDFWorker
+  */
+
+ /** @type {PDFWorker} */
 const PDFWorker = (function PDFWorkerClosure() {
   const pdfWorkerPorts = new WeakMap();
   let isWorkerDisabled = false;
