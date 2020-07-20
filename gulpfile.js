@@ -1142,18 +1142,14 @@ gulp.task("jsdoc", function (done) {
   });
 });
 
-gulp.task("dts", function(done) {
+gulp.task("dts", function (done) {
   console.log();
   console.log("### Generating typescript definitions");
 
-  var JSDOC_FILES = [
-    "src/display/api.js",
-    "src/shared/util.js",
-    "src/core/annotation.js",
-  ];
+  var JSDOC_FILES = ["src/pdf.js"];
 
-  rimraf(DTS_BUILD_DIR, function() {
-    mkdirp(DTS_BUILD_DIR, function() {
+  rimraf(DTS_BUILD_DIR, function () {
+    mkdirp(DTS_BUILD_DIR, function () {
       var command =
         '"node_modules/.bin/jsdoc" -t node_modules/tsd-jsdoc/dist -d ' +
         DTS_BUILD_DIR +
@@ -1610,7 +1606,7 @@ gulp.task(
     "lib",
     "minified",
     "dts",
-    function() {
+    function () {
       var VERSION = getVersionJSON().version;
 
       console.log();
