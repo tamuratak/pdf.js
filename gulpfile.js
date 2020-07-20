@@ -59,11 +59,11 @@ var DEFAULT_PREFERENCES_DIR = BUILD_DIR + "default_preferences/";
 var MINIFIED_DIR = BUILD_DIR + "minified/";
 var MINIFIED_ES5_DIR = BUILD_DIR + "minified-es5/";
 var JSDOC_BUILD_DIR = BUILD_DIR + "jsdoc/";
-var DTS_BUILD_DIR = BUILD_DIR + "dts/";
 var GH_PAGES_DIR = BUILD_DIR + "gh-pages/";
 var SRC_DIR = "src/";
 var LIB_DIR = BUILD_DIR + "lib/";
 var DIST_DIR = BUILD_DIR + "dist/";
+var DTS_BUILD_DIR = BUILD_DIR + "dts/";
 var COMMON_WEB_FILES = ["web/images/*.{png,svg,gif,cur}", "web/debugger.js"];
 var MOZCENTRAL_DIFF_FILE = "mozcentral.diff";
 
@@ -1146,18 +1146,7 @@ gulp.task("dts", function (done) {
   console.log();
   console.log("### Generating typescript definitions");
 
-  var JSDOC_FILES = ["src/pdf.js"];
-
-  rimraf(DTS_BUILD_DIR, function () {
-    mkdirp(DTS_BUILD_DIR, function () {
-      var command =
-        '"node_modules/.bin/jsdoc" -t node_modules/tsd-jsdoc/dist -d ' +
-        DTS_BUILD_DIR +
-        " " +
-        JSDOC_FILES.join(" ");
-      exec(command, done);
-    });
-  });
+  exec("tsc -p .", done);
 });
 
 function buildLib(defines, dir) {
@@ -1719,10 +1708,7 @@ gulp.task(
         gulp
           .src(LIB_DIR + "**/*", { base: LIB_DIR })
           .pipe(gulp.dest(DIST_DIR + "lib/")),
-        gulp
-          .src(DTS_BUILD_DIR + "types.d.ts")
-          .pipe(rename("pdf.d.ts"))
-          .pipe(gulp.dest(DIST_DIR + "build/")),
+        gulp.src(DTS_BUILD_DIR + "**/**").pipe(gulp.dest(DIST_DIR + "build/")),
       ]);
     }
   )

@@ -198,7 +198,7 @@ function setPDFNetworkStreamFactory(pdfNetworkStreamFactory) {
  * @param {string|TypedArray|DocumentInitParameters|PDFDataRangeTransport} src
  * Can be a url to where a PDF is located, a typed array (Uint8Array)
  * already populated with data or parameter object.
- * @returns {PDFDocumentLoadingTask}
+ * @returns {PDFDocumentLoadingTasks}
  */
 function getDocument(src) {
   const task = new PDFDocumentLoadingTask();
@@ -814,7 +814,7 @@ class PDFDocumentProxy {
   }
 
   /**
-   * @type {PDFDocumentLoadingTask} The loadingTask for the current document.
+   * @type {PDFDocumentLoadingTasks} The loadingTask for the current document.
    */
   get loadingTask() {
     return this._transport.loadingTask;
