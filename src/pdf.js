@@ -28,6 +28,8 @@ import {
   getDocument,
   LoopbackPort,
   PDFDataRangeTransport,
+  PDFDocumentProxy,
+  PDFPageProxy,
   PDFWorker,
   setPDFNetworkStreamFactory,
   version,
@@ -136,6 +138,8 @@ export {
   getDocument,
   LoopbackPort,
   PDFDataRangeTransport,
+  PDFDocumentProxy,
+  PDFPageProxy,
   PDFWorker,
   version,
   // From "./shared/util.js":

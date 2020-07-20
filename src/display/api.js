@@ -2584,7 +2584,7 @@ class RenderTask {
      * Callback for incremental rendering -- a function that will be called
      * each time the rendering is paused.  To continue rendering call the
      * function that is the first argument to the callback.
-     * @type {function}
+     * @type {() => {}}
      */
     this.onContinue = null;
   }
