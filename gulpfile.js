@@ -1150,17 +1150,19 @@ gulp.task("types", function (done) {
   console.log("### Generating typescript definitions using " + TYPES_INT);
 
   if (TYPES_INT === "tsc") {
-    var args =
-      `--target ES2020 --allowJS --declaration --outDir ${TYPES_BUILD_DIR} ` +
-      `--strict --esModuleInterop --forceConsistentCasingInFileNames ` +
-      `--emitDeclarationOnly`;
-    exec(`tsc ${args} src/pdf.js`, done);
+    var args = [
+      "target ES2020",
+      "allowJS",
+      "declaration",
+      `outDir ${TYPES_BUILD_DIR}`,
+      "strict",
+      "esModuleInterop",
+      "forceConsistentCasingInFileNames",
+      "emitDeclarationOnly",
+    ].join(" --");
+    exec(`tsc --${args} src/pdf.js`, done);
   } else {
-    var JSDOC_FILES = [
-      "src/display/api.js",
-      "src/shared/util.js",
-      "src/core/annotation.js",
-    ];
+    var JSDOC_FILES = ["src/display/api.js", "src/shared/util.js"];
 
     rimraf(TYPES_BUILD_DIR, function () {
       mkdirp(TYPES_BUILD_DIR).then(function () {
