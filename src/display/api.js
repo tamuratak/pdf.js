@@ -198,7 +198,7 @@ function setPDFNetworkStreamFactory(pdfNetworkStreamFactory) {
  * @param {string|TypedArray|DocumentInitParameters|PDFDataRangeTransport} src
  * Can be a url to where a PDF is located, a typed array (Uint8Array)
  * already populated with data or parameter object.
- * @returns {PDFDocumentLoadingTasks}
+ * @returns {PDFDocumentLoadingTask_}
  */
 function getDocument(src) {
   const task = new PDFDocumentLoadingTask();
@@ -619,7 +619,8 @@ class PDFDocumentProxy {
    * @param {{num: number, gen: number}} ref - The page reference. Must have
    *   the `num` and `gen` properties.
    * @returns {Promise<{num: number, gen: number}>} A promise that is resolved
-   *   with the page index that is associated with the reference.
+   *   with the page index (starting from zero) that is associated with the
+   *   reference.
    */
   getPageIndex(ref) {
     return this._transport.getPageIndex(ref);
@@ -814,7 +815,8 @@ class PDFDocumentProxy {
   }
 
   /**
-   * @type {PDFDocumentLoadingTasks} The loadingTask for the current document.
+   * TODO #12102 - find out how to export PDFDocumentLoadingTask
+   * @type {PDFDocumentLoadingTask_} The loadingTask for the current document.
    */
   get loadingTask() {
     return this._transport.loadingTask;
@@ -2626,7 +2628,7 @@ class RenderTask {
      * Callback for incremental rendering -- a function that will be called
      * each time the rendering is paused.  To continue rendering call the
      * function that is the first argument to the callback.
-     * @type {() => {}}
+     * @type {function}
      */
     this.onContinue = null;
   }
