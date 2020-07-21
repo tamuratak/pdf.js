@@ -198,7 +198,7 @@ function setPDFNetworkStreamFactory(pdfNetworkStreamFactory) {
  * @param {string|TypedArray|DocumentInitParameters|PDFDataRangeTransport} src
  * Can be a url to where a PDF is located, a typed array (Uint8Array)
  * already populated with data or parameter object.
- * @returns {PDFDocumentLoadingTasks}
+ * @returns {PDFDocumentLoadingTask}
  */
 function getDocument(src) {
   const task = new PDFDocumentLoadingTask();
@@ -426,7 +426,15 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
     });
 }
 
-/** @lends <global> */
+/**
+ * @typedef {Object} PDFDocumentLoadingTask
+ *
+ * @property promise {Promise<PDFDocumentProxy>} - Promise for document
+ *                                                 loading task completion.
+ *
+ */
+
+/** @type {PDFDocumentLoadingTask} */
 const PDFDocumentLoadingTask = (function PDFDocumentLoadingTaskClosure() {
   let nextDocumentId = 0;
 
@@ -814,7 +822,7 @@ class PDFDocumentProxy {
   }
 
   /**
-   * @type {PDFDocumentLoadingTasks} The loadingTask for the current document.
+   * @type {PDFDocumentLoadingTask} The loadingTask for the current document.
    */
   get loadingTask() {
     return this._transport.loadingTask;
