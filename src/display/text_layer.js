@@ -731,8 +731,9 @@ var renderTextLayer = (function renderTextLayerClosure() {
   /**
    * Starts rendering of the text layer.
    *
+   * TODO: #12102 - find out how to correctly export TextLayerRenderTask
    * @param {TextLayerRenderParameters} renderParameters
-   * @returns {TextLayerRenderTask.private}
+   * @returns {TextLayerRenderTask_}
    */
   // eslint-disable-next-line no-shadow
   function renderTextLayer(renderParameters) {
