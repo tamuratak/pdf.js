@@ -41,6 +41,10 @@ import {
  * @property {boolean} [enhanceTextSelection] - Whether to turn on the text
  *   selection enhancement.
  */
+
+/**
+ * @type {function(TextLayerRenderParameters): TextLayerRenderTask}
+ */
 var renderTextLayer = (function renderTextLayerClosure() {
   var MAX_TEXT_DIVS_TO_RENDER = 100000;
 
