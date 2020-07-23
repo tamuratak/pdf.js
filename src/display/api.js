@@ -513,11 +513,14 @@ const PDFDocumentLoadingTask = (function PDFDocumentLoadingTaskClosure() {
 
 /**
  * Abstract class to support range requests file loading.
- * @param {number} length
- * @param {Uint8Array} initialData
- * @param {boolean} progressiveDone
  */
 class PDFDataRangeTransport {
+  /**
+   *
+   * @param {number} length
+   * @param {Uint8Array} initialData
+   * @param {boolean} progressiveDone
+   */
   constructor(length, initialData, progressiveDone = false) {
     this.length = length;
     this.initialData = initialData;
@@ -2842,8 +2845,10 @@ const InternalRenderTask = (function InternalRenderTaskClosure() {
   return InternalRenderTask;
 })();
 
+/** @type {string} */
 const version =
   typeof PDFJSDev !== "undefined" ? PDFJSDev.eval("BUNDLE_VERSION") : null;
+/** @type {string} */
 const build =
   typeof PDFJSDev !== "undefined" ? PDFJSDev.eval("BUNDLE_BUILD") : null;
 
