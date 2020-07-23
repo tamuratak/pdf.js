@@ -28,7 +28,7 @@ import {
  * @property {ReadableStream} [textContentStream] - Text content stream to
  *   render (the stream is returned by the page's `streamTextContent` method).
  * @property {HTMLElement} container - HTML element that will contain text runs.
- * @property {PageViewport} viewport - The target viewport to properly
+ * @property {import("./display_utils").PageViewport} viewport - The target viewport to properly
  *   layout the text runs.
  * @property {Array<HTMLElement>} [textDivs] - HTML elements that are correspond to the
  *   text items of the textContent input. This is output and shall be

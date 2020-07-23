@@ -991,12 +991,6 @@ class PDFPageProxy {
   }
 
   /**
-   * @typedef {Object} PageViewport
-   * @property {number} width
-   * @property {number} height
-   */
-
-  /**
    * @param {GetViewportParameters} params - Viewport parameters.
    * @returns {PageViewport} Contains 'width' and 'height' properties
    *   along with transforms required for rendering.
