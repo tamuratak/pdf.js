@@ -422,16 +422,46 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
 }
 
 /**
+ *
+ * The loading task controls the operations required to load a PDF document
+ * (such as network requests) and provides a way to listen for completion,
+ * after which individual pages can be rendered.
+ *
  * @typedef {Object} PDFDocumentLoadingTask
  *
- * @property promise {Promise<PDFDocumentProxy>} - Promise for document
- *                                                 loading task completion.
+ * @property {string} docId
+ * Unique document loading task id -- used in MessageHandlers.
  *
- * @property destroy {function(): Promise<void>} - Aborts all network requests
- * and destroys worker.
+ * @property {boolean} destroyed
+ * Shows if loading task is destroyed.
+ *
+ * @property {?(cb: (pass: string) => void, reason: number) => void} onPassword
+ * Callback to request a password if wrong or no password was provided.
+ * The callback receives two parameters: function that needs to be called
+ * with new password and reason (see {PasswordResponses}).
+ *
+ * @property {?(progress: {loaded: number, total: number}) => void} onProgress
+ * Callback to be able to monitor the loading progress of the PDF file
+ * (necessary to implement e.g. a loading bar). The callback receives
+ * an {Object} with the properties: {number} loaded and {number} total.
+ *
+ * @property {?(feature: {featureId: string}) => void} onUnsupportedFeature
+ * allback to when unsupported feature is used. The callback receives
+ * an {UNSUPPORTED_FEATURES} argument.
+ *
+ * @property {Promise<PDFDocumentProxy>} promise
+ * Promise for document loading task completion.
+ *
+ * @property {() => Promise<void>} destroy
+ * Aborts all network requests and destroys worker.
+ * Returns a promise that is resolved after destruction activity is completed.
+ *
  */
 
-/** @type {PDFDocumentLoadingTask} */
+/**
+ * @type {any}
+ * @ignore
+*/
 const PDFDocumentLoadingTask = (function PDFDocumentLoadingTaskClosure() {
   let nextDocumentId = 0;
 
@@ -2629,7 +2659,7 @@ class RenderTask {
      * Callback for incremental rendering -- a function that will be called
      * each time the rendering is paused.  To continue rendering call the
      * function that is the first argument to the callback.
-     * @type {function}
+     * @type {?(cb: () => void) => void}
      */
     this.onContinue = null;
   }
@@ -2853,7 +2883,6 @@ export {
   PDFDataRangeTransport,
   PDFWorker,
   PDFDocumentProxy,
-  PDFDocumentLoadingTask,
   PDFPageProxy,
   setPDFNetworkStreamFactory,
   version,
