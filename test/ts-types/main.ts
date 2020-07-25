@@ -1,4 +1,5 @@
-import {getDocument, GlobalWorkerOptions, PDFDocumentProxy, PDFPageProxy} from "pdfjs-dist";
+import {getDocument, GlobalWorkerOptions} from "pdfjs-dist";
+import {PDFDocumentProxy, PDFPageProxy} from "pdfjs-dist/display/api";
 import pdfjsWorker from "pdfjs-dist/pdf.worker.entry";
 
 GlobalWorkerOptions.workerSrc = pdfjsWorker;
