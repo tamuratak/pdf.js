@@ -885,10 +885,6 @@ class PDFDocumentProxy {
  */
 
 /**
- * @typedef {Object} TextStyle
- */
-
-/**
  * Page text content.
  *
  * @typedef {Object} TextContent
