@@ -407,7 +407,7 @@ function getShadingPatternFromIR(raw) {
 }
 
 /**
- * @type {TilingPattern}
+ * @type {any}
  */
 var TilingPattern = (function TilingPatternClosure() {
   var PaintType = {

@@ -413,7 +413,7 @@ function shadow(obj, prop, value) {
 }
 
 /**
- * @type {BaseException}
+ * @type {any}
  */
 const BaseException = (function BaseExceptionClosure() {
   // eslint-disable-next-line no-shadow

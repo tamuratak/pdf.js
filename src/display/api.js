@@ -1620,7 +1620,7 @@ class LoopbackPort {
  *   constants from {VerbosityLevel} should be used.
  */
 
-/** @type {Object} */
+/** @type {any} */
 const PDFWorker = (function PDFWorkerClosure() {
   const pdfWorkerPorts = new WeakMap();
   let isWorkerDisabled = false;

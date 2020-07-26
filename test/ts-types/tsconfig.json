@@ -9,11 +9,10 @@
     "target": "es5",
     "module": "es2015",
     "baseUrl": "./",
+    "strict": true,
     "types": [],
     "lib": [
       "es2017",
-      "es2016",
-      "es2015",
       "dom"
     ],
     "paths": {

@@ -431,7 +431,7 @@ var CanvasExtraState = (function CanvasExtraStateClosure() {
 })();
 
 /**
- * @type {CanvasGraphics}
+ * @type {any}
  */
 var CanvasGraphics = (function CanvasGraphicsClosure() {
   // Defines the time the executeOperatorList is going to be executing

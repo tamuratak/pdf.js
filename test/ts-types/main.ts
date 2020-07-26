@@ -1,23 +1,27 @@
-import {getDocument, GlobalWorkerOptions} from "pdfjs-dist";
-import {PDFDocumentProxy, PDFPageProxy} from "pdfjs-dist/display/api";
-import pdfjsWorker from "pdfjs-dist/pdf.worker.entry";
-
-GlobalWorkerOptions.workerSrc = pdfjsWorker;
+import {getDocument} from "pdfjs-dist";
 
 class MainTest {
-    page: PDFPageProxy;
-    pdf: PDFDocumentProxy;
+    task: ReturnType<typeof getDocument> | undefined
 
     constructor(public file: string) {
     }
 
-    async loadPdf() {
-        this.pdf = await getDocument("file://" + this.file).promise;
-        this.page = await this.pdf.getPage(1);
+    loadPdf() {
+        this.task = getDocument("file://" + this.file);
+        return this.task.promise;
     }
+
+    get pdf() {
+        return this.task?.promise;
+    }
+
+    get page() {
+        return this.pdf?.then(doc => doc.getPage(1));
+    }
+
 }
 
 const mt = new MainTest("./test.pdf");
-mt.loadPdf().then((done) => {
+mt.loadPdf().then(() => {
     console.log("loaded");
 });
