@@ -435,24 +435,24 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
  * @property {boolean} destroyed
  * Shows if loading task is destroyed.
  *
- * @property {any} onPassword
+ * @property {function | null} onPassword
  * Callback to request a password if wrong or no password was provided.
  * The callback receives two parameters: function that needs to be called
  * with new password and reason (see {PasswordResponses}).
  *
- * @property {any} onProgress
+ * @property {function | null} onProgress
  * Callback to be able to monitor the loading progress of the PDF file
  * (necessary to implement e.g. a loading bar). The callback receives
  * an {Object} with the properties: {number} loaded and {number} total.
  *
- * @property {any} onUnsupportedFeature
+ * @property {function | null} onUnsupportedFeature
  * allback to when unsupported feature is used. The callback receives
  * an {UNSUPPORTED_FEATURES} argument.
  *
  * @property {Promise<PDFDocumentProxy>} promise
  * Promise for document loading task completion.
  *
- * @property {any} destroy
+ * @property {function | null} destroy
  * Aborts all network requests and destroys worker.
  * Returns a promise that is resolved after destruction activity is completed.
  *
@@ -2652,7 +2652,7 @@ class RenderTask {
      * Callback for incremental rendering -- a function that will be called
      * each time the rendering is paused.  To continue rendering call the
      * function that is the first argument to the callback.
-     * @type {any}
+     * @type {function}
      */
     this.onContinue = null;
   }
