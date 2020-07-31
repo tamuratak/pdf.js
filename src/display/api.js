@@ -432,15 +432,15 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
  * Unique document loading task id -- used in MessageHandlers.
  * @property {boolean} destroyed
  * Shows if loading task is destroyed.
- * @property {cbOnPassword} [onPassword]
+ * @property {cbOnPassword | null} onPassword
  * Callback to request a password if wrong or no password was provided.
  * The callback receives two parameters: function that needs to be called
  * with new password and reason (see {PasswordResponses}).
- * @property {cbOnProgress} onProgress
+ * @property {cbOnProgress | null} onProgress
  * Callback to be able to monitor the loading progress of the PDF file
  * (necessary to implement e.g. a loading bar). The callback receives
  * an {Object} with the properties: {number} loaded and {number} total.
- * @property {cbOnUnsupportedFeature} onUnsupportedFeature
+ * @property {cbOnUnsupportedFeature | null} onUnsupportedFeature
  * Callback for when an unsupported feature is used in the PDF document.
  * The callback receives an {UNSUPPORTED_FEATURES} argument.
  * @property {Promise<PDFDocumentProxy>} promise
@@ -448,19 +448,32 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
  * @property {cbDestroy} destroy
  * Aborts all network requests and destroys worker.
  * Returns a promise that is resolved after destruction activity is completed.
- *
+ */
+
+/**
  * @callback cbOnPassword
- * @param {string} password
+ * @param {cbUpdatePassword} cb
  * @param {number} reason
- *
+ * @returns {void}
+ */
+/**
+ * @callback cbUpdatePassword
+ * @param {string} password
+ * @returns {void}
+ */
+/**
  * @callback cbOnProgress
- * @param {number} loaded
- * @param {number} total
- *
+ * @param {{loaded: number, total: number}} progress
+ * @returns {void}
+ */
+/**
  * @callback cbOnUnsupportedFeature
- * @param {string} featureId
- *
+ * @param {{featureId: string}} feature
+ * @returns {void}
+ */
+/**
  * @callback cbDestroy
+ * @returns {Promise<void>}
  */
 
 /**
@@ -2667,8 +2680,7 @@ class RenderTask {
      * Callback for incremental rendering -- a function that will be called
      * each time the rendering is paused.  To continue rendering call the
      * function that is the first argument to the callback.
-     * @callback
-     * @param {function}
+     * @type {cbOnContinue | null}
      */
     this.onContinue = null;
   }
@@ -2690,6 +2702,17 @@ class RenderTask {
     this._internalRenderTask.cancel();
   }
 }
+
+/**
+* @callback cbOnContinue
+* @param {cbCont} cont
+* @returns {void}
+*/
+
+/**
+ * @callback cbCont
+ * @returns {void}
+ */
 
 /**
  * For internal use only.
