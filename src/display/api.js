@@ -854,7 +854,7 @@ class PDFDocumentProxy {
    * NOTE: Do not, under any circumstances, call this method when rendering is
    *       currently ongoing since that may lead to rendering errors.
    *
-   * @returns {Promise} A promise that is resolved when clean-up has finished.
+   * @returns {Promise<void>} A promise that is resolved when clean-up has finished.
    */
   cleanup() {
     return this._transport.startCleanup();
