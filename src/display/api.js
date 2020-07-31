@@ -976,7 +976,7 @@ class PDFDocumentProxy {
  *                    CSS <color> value, a CanvasGradient object (a linear or
  *                    radial gradient) or a CanvasPattern object (a repetitive
  *                    image). The default value is 'rgb(255,255,255)'.
- * @property {Object} [annotationStorage] - Storage for annotation data in
+ * @property {AnnotationStorage} [annotationStorage] - Storage for annotation data in
  *                    forms.
  */
 
