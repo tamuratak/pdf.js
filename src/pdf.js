@@ -123,6 +123,14 @@ if (typeof PDFJSDev === "undefined" || !PDFJSDev.test("PRODUCTION")) {
   });
 }
 
+/**
+ * @typedef {import("./display/api").PDFDocumentProxy} PDFDocumentProxy
+ */
+
+/**
+ * @typedef {import("./display/api").PDFPageProxy} PDFPageProxy
+ */
+
 export {
   // From "./display/display_utils.js":
   addLinkAttributes,
