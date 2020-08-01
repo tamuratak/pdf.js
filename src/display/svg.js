@@ -32,7 +32,7 @@ import { isNodeJS } from "../shared/is_node.js";
 /**
  * @typedef {Object} SVGGraphics
  * @property {cbGetSVG} getSVG
-*/
+ */
 
 /**
  * @callback cbGetSVG
