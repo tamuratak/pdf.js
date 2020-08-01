@@ -29,6 +29,18 @@ import {
 import { DOMSVGFactory } from "./display_utils.js";
 import { isNodeJS } from "../shared/is_node.js";
 
+/**
+ * @typedef {Object} SVGGraphics
+ * @property {cbGetSVG} getSVG
+*/
+
+/**
+ * @callback cbGetSVG
+ * @param {import("./api").PDFOperatorList} operatorList
+ * @param {import("./display_utils").PageViewport} viewPort
+ * @returns {Promise<SVGElement>}
+ */
+
 /** @type {any} */
 let SVGGraphics = function () {
   throw new Error("Not implemented: SVGGraphics");
