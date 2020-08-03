@@ -18,6 +18,10 @@
  */
 class AnnotationStorage {
   constructor() {
+    /**
+     * @type {Object}
+     * @private
+     */
     this._storage = Object.create(null);
   }
 
