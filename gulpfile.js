@@ -1753,7 +1753,7 @@ gulp.task(
           .src(LIB_DIR + "**/*", { base: LIB_DIR })
           .pipe(gulp.dest(DIST_DIR + "lib/")),
         gulp
-          .src(TYPES_DIR + "**/*", { base: TYPES_DIR })
+          .src(TYPES_BUILD_DIR + "**/*", { base: TYPES_BUILD_DIR })
           .pipe(gulp.dest(DIST_DIR + "types/")),
       ]);
     }
