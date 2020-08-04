@@ -1154,7 +1154,7 @@ gulp.task("types", function (done) {
     "forceConsistentCasingInFileNames",
     "emitDeclarationOnly",
   ].join(" --");
-  exec(`node_modules/.bin/tsc --${args} src/pdf.js`, done);
+  exec(`"node_modules/.bin/tsc" --${args} src/pdf.js`, done);
 });
 
 function buildLib(defines, dir) {
@@ -1753,8 +1753,8 @@ gulp.task(
           .src(LIB_DIR + "**/*", { base: LIB_DIR })
           .pipe(gulp.dest(DIST_DIR + "lib/")),
         gulp
-          .src(TYPES_BUILD_DIR + "**/**")
-          .pipe(gulp.dest(DIST_DIR + "build/")),
+          .src(TYPES_BUILD_DIR + "**/*", { base: TYPES_BUILD_DIR })
+          .pipe(gulp.dest(DIST_DIR + "types/")),
       ]);
     }
   )
