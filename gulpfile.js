@@ -1721,7 +1721,7 @@ gulp.task(
           .src(LIB_DIR + "**/*", { base: LIB_DIR })
           .pipe(gulp.dest(DIST_DIR + "lib/")),
         gulp
-          .src(TYPES_BUILD_DIR + "**/*", { base: TYPES_BUILD_DIR })
+          .src(TYPES_DIR + "**/*", { base: TYPES_DIR })
           .pipe(gulp.dest(DIST_DIR + "types/")),
       ]);
     }
@@ -1859,19 +1859,15 @@ gulp.task(
 
 gulp.task(
   "typestest",
-  gulp.series(
-    "dist-install",
-
-    function (done) {
-      exec(`node_modules/.bin/tsc -p test/types`, function (err, stdout) {
-        if (err !== null) {
-          console.log("couldn't compile typescript test: " + stdout);
-        }
-        done(err);
-      });
-    }
-  )
-);
+  gulp.series("dist-install", function (done) {
+    exec('"node_modules/.bin/tsc" -p test/types', function (err, stdout) {
+      if (err) {
+        console.log(`Couldn't compile TypeScript test: ${stdout}`);
+      }
+      done(err);
+    });
+  })
+  );
 
 gulp.task("externaltest", function (done) {
   fancylog("Running test-fixtures.js");
