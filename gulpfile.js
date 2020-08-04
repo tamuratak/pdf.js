@@ -1640,7 +1640,7 @@ function packageBowerJson() {
     name: DIST_NAME,
     version: VERSION,
     main: "build/pdf.js",
-    types: "build/pdf.d.ts",
+    types: "types/pdf.d.ts",
     description: DIST_DESCRIPTION,
     keywords: DIST_KEYWORDS,
     homepage: DIST_HOMEPAGE,

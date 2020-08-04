@@ -14,13 +14,6 @@
     "lib": [
       "es2017",
       "dom"
-    ],
-    "paths": {
-      "pdfjs-dist": ["../../build/typestest"],
-      "pdfjs-dist/*": ["../../build/typestest/build/*"]
-    }
-  },
-  "files": [
-    "main.ts"
-  ],
+    ]
+  }
 }
