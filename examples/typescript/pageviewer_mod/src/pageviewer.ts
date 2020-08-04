@@ -15,7 +15,7 @@
 
 declare const pdfjsViewer: any;
 declare const pdfjsLib: typeof import('pdfjs-dist');
-import type {PDFDocumentProxy} from 'pdfjs-dist/build/display/api';
+import type {PDFDocumentProxy} from 'pdfjs-dist/types/display/api';
 
 if (!pdfjsLib.getDocument || !pdfjsViewer.PDFPageView) {
   alert("Please build the pdfjs-dist library using\n  `gulp dist-install`");
