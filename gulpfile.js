@@ -1353,38 +1353,6 @@ gulp.task(
   })
 );
 
-gulp.task(
-  "typestest-pre",
-  gulp.series("testing-pre", "generic", "types", function () {
-    const [packageJsonSrc] = packageBowerJson();
-    return merge([
-      packageJsonSrc.pipe(gulp.dest(TYPESTEST_DIR)),
-      gulp
-        .src([
-          GENERIC_DIR + "build/pdf.js",
-          GENERIC_DIR + "build/pdf.worker.js",
-          SRC_DIR + "pdf.worker.entry.js",
-        ])
-        .pipe(gulp.dest(TYPESTEST_DIR + "build/")),
-      gulp
-        .src(TYPES_DIR + "**/*", { base: TYPES_DIR })
-        .pipe(gulp.dest(TYPESTEST_DIR + "types/")),
-    ]);
-  })
-);
-
-gulp.task(
-  "typestest",
-  gulp.series("typestest-pre", function (done) {
-    exec('"node_modules/.bin/tsc" -p test/types', function (err, stdout) {
-      if (err) {
-        console.log(`Couldn't compile TypeScript test: ${stdout}`);
-      }
-      done(err);
-    });
-  })
-);
-
 gulp.task("baseline", function (done) {
   console.log();
   console.log("### Creating baseline environment");
@@ -1887,6 +1855,22 @@ gulp.task(
           });
       });
   })
+);
+
+gulp.task(
+  "typestest",
+  gulp.series(
+    "dist-install",
+
+    function (done) {
+      exec(`node_modules/.bin/tsc -p test/types`, function (err, stdout) {
+        if (err !== null) {
+          console.log("couldn't compile typescript test: " + stdout);
+        }
+        done(err);
+      });
+    }
+  )
 );
 
 gulp.task("externaltest", function (done) {
