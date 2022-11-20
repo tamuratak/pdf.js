@@ -64,6 +64,10 @@
     "wintersmith": "^2.5.0",
     "yargs": "^17.6.2"
   },
+  "overrides": {
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1"
+  },
   "scripts": {
     "postinstall": "cross-env PUPPETEER_PRODUCT=firefox node node_modules/puppeteer/install.js"
   },
