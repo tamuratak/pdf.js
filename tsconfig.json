@@ -4,19 +4,18 @@
     "allowJs": true,
     "declaration": true,
     "strict": true,
-    "emitDeclarationOnly": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "module": "CommonJS",
     "paths": {
       "pdfjs-lib": ["./src/pdf"],
-      "display-fetch_stream": ["./src/display/fetch_stream"],
+      "display-fetch_stream": ["./src/display/fetch_stream.js"],
       "display-network": ["./src/display/network"],
       "display-node_stream": ["./src/display/node_stream"],
       "display-node_utils": ["./src/display/node_utils"],
       "fluent-bundle": ["./node_modules/@fluent/bundle/esm/index.js"],
       "fluent-dom": ["./node_modules/@fluent/dom/esm/index.js"],
-      "web-l10n_utils": ["./web/l10n_utils"]
+      "web-l10n_utils": ["./web/l10n_utils.js"]
     }
   },
   "files": [
