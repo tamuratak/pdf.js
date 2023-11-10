@@ -1,1 +1,1 @@
-export * from "../../types/web/pdf_viewer.component";
+export * from "../../types/web/pdf_viewer.component.js";
