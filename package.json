@@ -5,6 +5,8 @@
     "@babel/core": "^7.23.2",
     "@babel/preset-env": "^7.23.2",
     "@babel/runtime": "^7.23.2",
+    "@fluent/bundle": "^0.18.0",
+    "@fluent/dom": "^0.9.0",
     "@javascript-obfuscator/escodegen": "2.3.0",
     "acorn": "^8.11.2",
     "autoprefixer": "^10.4.16",
@@ -24,8 +26,6 @@
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-sort-exports": "^0.8.0",
     "eslint-plugin-unicorn": "^49.0.0",
-    "@fluent/bundle": "^0.18.0" ,
-    "@fluent/dom": "^0.9.0",
     "globals": "^13.23.0",
     "gulp": "^4.0.2",
     "gulp-postcss": "^9.0.1",
@@ -72,5 +72,8 @@
   "engines": {
     "node": ">=18"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "pdfjs-dist": "file:build/dist"
+  }
 }
