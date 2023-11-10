@@ -13,13 +13,13 @@
  * limitations under the License.
  */
 
-/** @typedef {import("./api").PDFPageProxy} PDFPageProxy */
-/** @typedef {import("./display_utils").PageViewport} PageViewport */
+/** @typedef {import("./api.js").PDFPageProxy} PDFPageProxy */
+/** @typedef {import("./display_utils.js").PageViewport} PageViewport */
 // eslint-disable-next-line max-len
 /** @typedef {import("../../web/text_accessibility.js").TextAccessibilityManager} TextAccessibilityManager */
 // eslint-disable-next-line max-len
-/** @typedef {import("../../web/interfaces").IDownloadManager} IDownloadManager */
-/** @typedef {import("../../web/interfaces").IPDFLinkService} IPDFLinkService */
+/** @typedef {import("../../web/interfaces.js").IDownloadManager} IDownloadManager */
+/** @typedef {import("../../web/interfaces.js").IPDFLinkService} IPDFLinkService */
 
 import {
   AnnotationBorderStyleType,
