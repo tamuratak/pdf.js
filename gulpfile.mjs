@@ -1534,7 +1534,7 @@ gulp.task("types", function (done) {
   exec(
     `"node_modules/.bin/tsc" --outDir ${TYPES_DIR} --project .`,
     function () {
-      exec(`"node_modules/.bin/tsc-alias" --debug --outDir ${TYPES_DIR}`, done);
+      exec(`"node_modules/.bin/tsconfig-replace-paths" --project tsconfig.json`, done);
     }
   );
 });

@@ -52,7 +52,7 @@
     "stylelint-prettier": "^4.0.2",
     "terser": "^5.24.0",
     "through2": "^4.0.2",
-    "tsc-alias": "^1.8.8",
+    "tsconfig-replace-paths": "^0.0.14",
     "ttest": "^4.0.0",
     "typescript": "^5.2.2",
     "typogr": "^0.6.8",
