@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-/** @typedef {import("./display_utils").PageViewport} PageViewport */
-/** @typedef {import("./api").TextContent} TextContent */
+/** @typedef {import("./display_utils.js").PageViewport} PageViewport */
+/** @typedef {import("./api.js").TextContent} TextContent */
 
 import {
   AbortException,

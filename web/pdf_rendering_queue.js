@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
-/** @typedef {import("./interfaces").IRenderableView} IRenderableView */
-/** @typedef {import("./pdf_viewer").PDFViewer} PDFViewer */
+/** @typedef {import("./interfaces.js").IRenderableView} IRenderableView */
+/** @typedef {import("./pdf_viewer.js").PDFViewer} PDFViewer */
 // eslint-disable-next-line max-len
-/** @typedef {import("./pdf_thumbnail_viewer").PDFThumbnailViewer} PDFThumbnailViewer */
+/** @typedef {import("./pdf_thumbnail_viewer.js").PDFThumbnailViewer} PDFThumbnailViewer */
 
 import { RenderingCancelledException } from "pdfjs-lib";
 import { RenderingStates } from "./ui_utils.js";

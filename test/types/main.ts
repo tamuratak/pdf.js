@@ -1,5 +1,5 @@
 import { getDocument } from "pdfjs-dist";
-import { EventBus } from "pdfjs-dist/web/pdf_viewer.component";
+import { EventBus } from "pdfjs-dist/types/web/pdf_viewer.component.js";
 
 class MainTest {
   eventBus: EventBus;

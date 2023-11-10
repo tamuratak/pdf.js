@@ -13,20 +13,20 @@
  * limitations under the License.
  */
 
-/** @typedef {import("../src/display/api").PDFDocumentProxy} PDFDocumentProxy */
-/** @typedef {import("../src/display/api").PDFPageProxy} PDFPageProxy */
+/** @typedef {import("../src/display/api.js").PDFDocumentProxy} PDFDocumentProxy */
+/** @typedef {import("../src/display/api.js").PDFPageProxy} PDFPageProxy */
 // eslint-disable-next-line max-len
-/** @typedef {import("../src/display/display_utils").PageViewport} PageViewport */
+/** @typedef {import("../src/display/display_utils.js").PageViewport} PageViewport */
 // eslint-disable-next-line max-len
-/** @typedef {import("../src/display/optional_content_config").OptionalContentConfig} OptionalContentConfig */
-/** @typedef {import("./event_utils").EventBus} EventBus */
-/** @typedef {import("./interfaces").IDownloadManager} IDownloadManager */
-/** @typedef {import("./interfaces").IL10n} IL10n */
-/** @typedef {import("./interfaces").IPDFLinkService} IPDFLinkService */
+/** @typedef {import("../src/display/optional_content_config.js").OptionalContentConfig} OptionalContentConfig */
+/** @typedef {import("./event_utils.js").EventBus} EventBus */
+/** @typedef {import("./interfaces.js").IDownloadManager} IDownloadManager */
+/** @typedef {import("./interfaces.js").IL10n} IL10n */
+/** @typedef {import("./interfaces.js").IPDFLinkService} IPDFLinkService */
 // eslint-disable-next-line max-len
-/** @typedef {import("./pdf_find_controller").PDFFindController} PDFFindController */
+/** @typedef {import("./pdf_find_controller.js").PDFFindController} PDFFindController */
 // eslint-disable-next-line max-len
-/** @typedef {import("./pdf_scripting_manager").PDFScriptingManager} PDFScriptingManager */
+/** @typedef {import("./pdf_scripting_manager.js").PDFScriptingManager} PDFScriptingManager */
 
 import {
   AnnotationEditorType,

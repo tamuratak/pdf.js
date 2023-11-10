@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/** @typedef {import("./api").TextContent} TextContent */
+/** @typedef {import("./api.js").TextContent} TextContent */
 
 class XfaText {
   /**

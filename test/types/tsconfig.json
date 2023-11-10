@@ -3,7 +3,7 @@
     "outDir": "../../build/tmp",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "ESNext",
@@ -16,8 +16,8 @@
       "DOM"
     ],
     "paths": {
-      "pdfjs-dist": ["../../build/typestest"],
-      "pdfjs-dist/*": ["../../build/typestest/types/*"]
+      "pdfjs-dist": ["../../build/dist"],
+      "pdfjs-dist/*": ["../../build/dist/*"]
     }
   },
   "files": [

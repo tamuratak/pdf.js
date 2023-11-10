@@ -1534,7 +1534,7 @@ gulp.task("types", function (done) {
   exec(
     `"node_modules/.bin/tsc" --outDir ${TYPES_DIR} --project .`,
     function () {
-      exec(`"node_modules/.bin/tsc-alias" --outDir ${TYPES_DIR}`, done);
+      exec(`"node_modules/.bin/tsconfig-replace-paths" --project tsconfig.json`, done);
     }
   );
 });
@@ -1836,37 +1836,6 @@ gulp.task(
   )
 );
 
-gulp.task(
-  "typestest",
-  gulp.series(
-    setTestEnv,
-    "generic",
-    "types",
-    function createTypesTest() {
-      return merge([
-        packageJson().pipe(gulp.dest(TYPESTEST_DIR)),
-        gulp
-          .src([
-            GENERIC_DIR + "build/pdf.mjs",
-            GENERIC_DIR + "build/pdf.worker.mjs",
-          ])
-          .pipe(gulp.dest(TYPESTEST_DIR + "build/")),
-        gulp
-          .src(TYPES_DIR + "**/*", { base: TYPES_DIR })
-          .pipe(gulp.dest(TYPESTEST_DIR + "types/")),
-      ]);
-    },
-    function runTypesTest(done) {
-      exec('"node_modules/.bin/tsc" -p test/types', function (err, stdout) {
-        if (err) {
-          console.log(`Couldn't compile TypeScript test: ${stdout}`);
-        }
-        done(err);
-      });
-    }
-  )
-);
-
 function createBaseline(done) {
   console.log();
   console.log("### Creating baseline environment");
@@ -2149,6 +2118,7 @@ function packageJson() {
     name: DIST_NAME,
     version: VERSION,
     main: "build/pdf.mjs",
+    type: "module",
     types: "types/src/pdf.d.ts",
     description: DIST_DESCRIPTION,
     keywords: DIST_KEYWORDS,
@@ -2342,6 +2312,37 @@ gulp.task(
     console.log();
     done();
   })
+);
+
+gulp.task(
+  "typestest",
+  gulp.series(
+    setTestEnv,
+    "dist",
+    "types",
+    function createTypesTest() {
+      return merge([
+        packageJson().pipe(gulp.dest(TYPESTEST_DIR)),
+        gulp
+          .src([
+            GENERIC_DIR + "build/pdf.mjs",
+            GENERIC_DIR + "build/pdf.worker.mjs",
+          ])
+          .pipe(gulp.dest(TYPESTEST_DIR + "build/")),
+        gulp
+          .src(TYPES_DIR + "**/*", { base: TYPES_DIR })
+          .pipe(gulp.dest(TYPESTEST_DIR + "types/")),
+      ]);
+    },
+    function runTypesTest(done) {
+      exec('"node_modules/.bin/tsc" -p test/types', function (err, stdout) {
+        if (err) {
+          console.log(`Couldn't compile TypeScript test: ${stdout}`);
+        }
+        done(err);
+      });
+    }
+  )
 );
 
 gulp.task(
