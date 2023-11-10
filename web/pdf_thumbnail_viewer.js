@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @typedef {import("../src/display/api").PDFDocumentProxy} PDFDocumentProxy */
-/** @typedef {import("../src/display/api").PDFPageProxy} PDFPageProxy */
-/** @typedef {import("./event_utils").EventBus} EventBus */
-/** @typedef {import("./interfaces").IPDFLinkService} IPDFLinkService */
+/** @typedef {import("../src/display/api.js").PDFDocumentProxy} PDFDocumentProxy */
+/** @typedef {import("../src/display/api.js").PDFPageProxy} PDFPageProxy */
+/** @typedef {import("./event_utils.js").EventBus} EventBus */
+/** @typedef {import("./interfaces.js").IPDFLinkService} IPDFLinkService */
 // eslint-disable-next-line max-len
-/** @typedef {import("./pdf_rendering_queue").PDFRenderingQueue} PDFRenderingQueue */
+/** @typedef {import("./pdf_rendering_queue.js").PDFRenderingQueue} PDFRenderingQueue */
 
 import {
   getVisibleElements,

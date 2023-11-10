@@ -14,9 +14,9 @@
  */
 
 // eslint-disable-next-line max-len
-/** @typedef {import("../src/display/display_utils").PageViewport} PageViewport */
-/** @typedef {import("../src/display/api").TextContent} TextContent */
-/** @typedef {import("./text_highlighter").TextHighlighter} TextHighlighter */
+/** @typedef {import("../src/display/display_utils.js").PageViewport} PageViewport */
+/** @typedef {import("../src/display/api.js").TextContent} TextContent */
+/** @typedef {import("./text_highlighter.js").TextHighlighter} TextHighlighter */
 // eslint-disable-next-line max-len
 /** @typedef {import("./text_accessibility.js").TextAccessibilityManager} TextAccessibilityManager */
 

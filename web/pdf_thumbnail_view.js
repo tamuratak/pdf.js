@@ -14,14 +14,14 @@
  */
 
 // eslint-disable-next-line max-len
-/** @typedef {import("../src/display/optional_content_config").OptionalContentConfig} OptionalContentConfig */
+/** @typedef {import("../src/display/optional_content_config.js").OptionalContentConfig} OptionalContentConfig */
 // eslint-disable-next-line max-len
-/** @typedef {import("../src/display/display_utils").PageViewport} PageViewport */
-/** @typedef {import("./event_utils").EventBus} EventBus */
-/** @typedef {import("./interfaces").IPDFLinkService} IPDFLinkService */
-/** @typedef {import("./interfaces").IRenderableView} IRenderableView */
+/** @typedef {import("../src/display/display_utils.js").PageViewport} PageViewport */
+/** @typedef {import("./event_utils.js").EventBus} EventBus */
+/** @typedef {import("./interfaces.js").IPDFLinkService} IPDFLinkService */
+/** @typedef {import("./interfaces.js").IRenderableView} IRenderableView */
 // eslint-disable-next-line max-len
-/** @typedef {import("./pdf_rendering_queue").PDFRenderingQueue} PDFRenderingQueue */
+/** @typedef {import("./pdf_rendering_queue.js").PDFRenderingQueue} PDFRenderingQueue */
 
 import { OutputScale, RenderingStates } from "./ui_utils.js";
 import { RenderingCancelledException } from "pdfjs-lib";
