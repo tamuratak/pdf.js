@@ -6,8 +6,7 @@ const path = require("path");
 module.exports = {
   context: __dirname,
   entry: {
-    main: "./main.mjs",
-    "pdf.worker": "pdfjs-dist/build/pdf.worker.mjs",
+    main: "./main.mjs"
   },
   mode: "none",
   output: {
